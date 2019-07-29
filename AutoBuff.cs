@@ -13,7 +13,7 @@ namespace AutoBuff
 	class AutoBuff : Mod
 	{
 
-        public static bool DEBUG = true;
+        public static bool DEBUG = false;
 
 
         public static AutoBuff instance;
@@ -83,6 +83,7 @@ namespace AutoBuff
                 case AutoBuffModMessageType.AutoBuffSyncPlayer:
                     {
                         byte playernumber = reader.ReadByte();
+
                         AutoBuffPlayer examplePlayer = Main.player[playernumber].GetModPlayer<AutoBuffPlayer>();
 
                         for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
@@ -94,7 +95,11 @@ namespace AutoBuff
                     }
                 case AutoBuffModMessageType.AutoBuffChange:
                     {
+                        
+
                         byte playernumber = reader.ReadByte();
+
+
                         AutoBuffPlayer examplePlayer = Main.player[playernumber].GetModPlayer<AutoBuffPlayer>();
 
                         for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
@@ -105,6 +110,7 @@ namespace AutoBuff
 
                         if (Main.netMode == NetmodeID.Server)
                         {
+
                             var packet = GetPacket();
                             packet.Write((byte)AutoBuffModMessageType.AutoBuffChange);
                             packet.Write((byte)playernumber);

@@ -15,8 +15,11 @@ namespace AutoBuff.Items
 {
     class AutoBuffPlayer: ModPlayer
     {
+        
         public bool[] boughtbuffsavail = new bool[AutoBuffBuffs.buffs.Length];
         public bool[] buffsavail = new bool[AutoBuffBuffs.buffs.Length];
+
+        public override bool CloneNewInstances => false;
 
 
         public override void clientClone(ModPlayer clientClone)
@@ -24,13 +27,13 @@ namespace AutoBuff.Items
             AutoBuffPlayer clone = clientClone as AutoBuffPlayer;
             // Here we would make a backup clone of values that are only correct on the local players Player instance.
             // Some examples would be RPG stats from a GUI, Hotkey states, and Extra Item Slots
-            /*clone.boughtbuffsavail = new bool[AutoBuffBuffs.buffs.Length];
+            clone.boughtbuffsavail = new bool[AutoBuffBuffs.buffs.Length];
             clone.buffsavail = new bool[AutoBuffBuffs.buffs.Length];
-            for(int i=0; i< AutoBuffBuffs.buffs.Length; i++)
+            for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
             {
                 clone.boughtbuffsavail[i] = boughtbuffsavail[i];
                 clone.buffsavail[i] = buffsavail[i];
-            }*/
+            }
         }
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
@@ -66,7 +69,7 @@ namespace AutoBuff.Items
                 }
             }
 
-            if(send)
+            if (send)
             {
                 var packet = mod.GetPacket();
                 packet.Write((byte)AutoBuffModMessageType.AutoBuffChange);
@@ -82,7 +85,6 @@ namespace AutoBuff.Items
 
         public override TagCompound Save()
         {
-
             byte[] b1 = new byte[AutoBuffBuffs.buffs.Length];
             byte[] b2 = new byte[AutoBuffBuffs.buffs.Length];
 
@@ -93,8 +95,8 @@ namespace AutoBuff.Items
             }
 
             return new TagCompound {
-				// {"somethingelse", somethingelse}, // To save more data, add additional lines
-				{"boughtbuffsavail", b1},
+                // {"somethingelse", somethingelse}, // To save more data, add additional lines
+                {"boughtbuffsavail", b1},
                 {"buffsavail", b2},
             };
         }
@@ -135,18 +137,6 @@ namespace AutoBuff.Items
             if(!this.player.HasBuff(mod.BuffType("CompactBuff")))
             {
                 this.player.AddBuff(mod.BuffType("CompactBuff"), int.MaxValue, true);
-            }
-
-            var mp = Main.player[Main.myPlayer].GetModPlayer<AutoBuffPlayer>();
-            for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
-            {
-                if (mp.boughtbuffsavail[i] && mp.buffsavail[i])
-                {
-                    if (AutoBuffBuffs.buffs[i].useMainBuff)
-                    {
-                        Main.player[Main.myPlayer].AddBuff(AutoBuffBuffs.buffs[i].id, int.MaxValue, true);
-                    }
-                }
             }
         }
     }

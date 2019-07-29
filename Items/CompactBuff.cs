@@ -64,17 +64,33 @@ namespace AutoBuff.Items
         public override void Update(Player player, ref int buffIndex)
         {
             var mp = player.GetModPlayer<AutoBuffPlayer>();
-
-
+            //AutoBuff.instance.Logger.Info("Player ID:" + player.whoAmI + " used mp.test:" + mp.test);
             for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++) {
                 if(mp.boughtbuffsavail[i] && mp.buffsavail[i])
                 {
                     if (!AutoBuffBuffs.buffs[i].useMainBuff) {
                         AutoBuffBuffs.buffs[i].func(player);
                     }
+                    else
+                    {
+                        if (!player.HasBuff(AutoBuffBuffs.buffs[i].id))
+                        {
+                            player.AddBuff(AutoBuffBuffs.buffs[i].id, int.MaxValue);
+                        }
+                    }
+                }
+                else
+                {
+                    if (AutoBuffBuffs.buffs[i].useMainBuff)
+                    {
+                        if (player.HasBuff(AutoBuffBuffs.buffs[i].id))
+                        {
+                            player.ClearBuff(AutoBuffBuffs.buffs[i].id);
+                        }
+                    }
                 }
             }
-
+            
 
 
 

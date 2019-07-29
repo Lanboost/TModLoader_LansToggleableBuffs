@@ -33,7 +33,7 @@ namespace AutoBuff.ui
             // ignore these extra 0s
             panel.Left.Set(800, 0); //this makes the distance between the left of the screen and the left of the panel 500 pixels (somewhere by the middle)
             panel.Top.Set(100, 0); //this is the distance between the top of the screen and the top of the panel
-
+            
             if (AutoBuffBuffs.buffs.Length > 20)
             {
                 panel.Width.Set(20 * 40 + 20, 0);
@@ -138,7 +138,7 @@ namespace AutoBuff.ui
                     Main.player[Main.myPlayer].GetModPlayer<AutoBuffPlayer>().buffsavail[j] = val;
                 };
             }
-
+            
             Append(panel); //appends the panel to the UIState
         }
 
@@ -149,6 +149,7 @@ namespace AutoBuff.ui
 
             if (visible)
             {
+                
                 var mp = Main.player[Main.myPlayer].GetModPlayer<AutoBuffPlayer>();
 
                 for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
@@ -174,6 +175,7 @@ namespace AutoBuff.ui
                         toggleButtons[i].SetImage(buttonPlayTexture2);
                     }
                 }
+                
             }
         }
     }

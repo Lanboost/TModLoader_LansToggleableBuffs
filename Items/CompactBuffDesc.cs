@@ -21,7 +21,8 @@ namespace AutoBuff.Items
 
                 string desc = "";
 
-                var mp = Main.player[Main.myPlayer].GetModPlayer<AutoBuffPlayer>();
+                var mp = Main.LocalPlayer.GetModPlayer<AutoBuffPlayer>();
+                
                 for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
                 {
                     if (mp.boughtbuffsavail[i] && mp.buffsavail[i])
