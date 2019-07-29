@@ -1,0 +1,3 @@
+author = Lanboost
+version = 0.1
+displayName = Lan's autobuff
