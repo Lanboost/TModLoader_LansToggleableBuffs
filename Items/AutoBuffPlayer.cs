@@ -125,6 +125,13 @@ namespace AutoBuff.Items
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
+            if(Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+            {
+                Panel.visible = false;
+            }
+
+
+
             if (((AutoBuff)mod).ShowUI.JustPressed)
             {
                 Panel.visible = !Panel.visible;

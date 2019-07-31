@@ -26,7 +26,9 @@ namespace AutoBuff
         }
 
         internal Panel somethingUI;
+        internal TooltipPanel tooltipPanel;
         public UserInterface somethingInterface;
+        public UserInterface tooltipInterface;
 
         public override void Load()
         {
@@ -41,14 +43,18 @@ namespace AutoBuff
             }
 
             ShowUI = RegisterHotKey("Show UI", "L");
+        }
 
-            
-            
-
+        public override void Unload()
+        {
+            instance = this;
         }
 
         public override void UpdateUI(GameTime gameTime)
         {
+
+            
+
             // it will only draw if the player is not on the main menu
             if (!Main.gameMenu
                 && Panel.visible)
@@ -59,7 +65,11 @@ namespace AutoBuff
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
-            layers.Add(new LegacyGameInterfaceLayer("AutoBuff", DrawSomethingUI, InterfaceScaleType.UI));
+            int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+            if (mouseTextIndex != -1)
+            {
+                layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer("AutoBuff", DrawSomethingUI, InterfaceScaleType.UI));
+            }
         }
 
         private bool DrawSomethingUI()

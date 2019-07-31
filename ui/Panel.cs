@@ -19,13 +19,18 @@ namespace AutoBuff.ui
         public static bool visible = false;
         public DragableUIPanel panel;
 
-        UIImageButton[] ownedImages;
+        UIImageButtonLabel[] ownedImages;
         UIHoverImageToggleButton[] toggleButtons;
         Texture2D buttonPlayTexture1;
         Texture2D buttonPlayTexture2;
+        
 
         public override void OnInitialize()
         {
+            TooltipPanel.Instance = new TooltipPanel();
+            TooltipPanel.Instance.Init();
+
+
             // if you set this to true, it will show up in game
             visible = false;
 
@@ -48,8 +53,9 @@ namespace AutoBuff.ui
 
             buttonPlayTexture1 = ModContent.GetTexture("AutoBuff/ui/checkbox");
             buttonPlayTexture2 = ModContent.GetTexture("AutoBuff/ui/checkboxunchecked");
+            var unownedTexture = ModContent.GetTexture("AutoBuff/ui/unowned");
 
-            ownedImages = new UIImageButton[AutoBuffBuffs.buffs.Length];
+            ownedImages = new UIImageButtonLabel[AutoBuffBuffs.buffs.Length];
             toggleButtons = new UIHoverImageToggleButton[AutoBuffBuffs.buffs.Length];
 
             int top = 10;
@@ -68,7 +74,7 @@ namespace AutoBuff.ui
                 icon.Height.Set(32, 0f);
                 panel.Append(icon);
 
-                ownedImages[i] = new UIImageButton(buttonPlayTexture2);
+                ownedImages[i] = new UIImageButtonLabel(unownedTexture, "Buy buff " + AutoBuffBuffs.buffs[i].name);
                 ownedImages[i].Left.Set(lleft, 0f);
                 ownedImages[i].Top.Set(ttop + 40, 0f);
                 ownedImages[i].Width.Set(32, 0f);
@@ -79,40 +85,21 @@ namespace AutoBuff.ui
                     var mp = Main.player[Main.myPlayer].GetModPlayer<AutoBuffPlayer>();
                     if (!mp.boughtbuffsavail[j])
                     {
-                        int count = 0;
-                        for(int k = 0; k< Main.player[Main.myPlayer].inventory.Length; k++)
+                        bool canbuy = true;
+                        foreach(var v in AutoBuffBuffs.buffs[j].cost)
                         {
-                            if(Main.player[Main.myPlayer].inventory[k].netID == AutoBuffBuffs.buffs[j].itemid)
+                            if(!v.CheckBuy())
                             {
-                                count += Main.player[Main.myPlayer].inventory[k].stack;
+                                canbuy = false;
+                                break;
                             }
                         }
 
-                        if (AutoBuff.DEBUG || count >= AutoBuffBuffs.buffs[j].count)
-                        {
-                            if (!AutoBuff.DEBUG)
+                        if(canbuy) {
+                            foreach (var v in AutoBuffBuffs.buffs[j].cost)
                             {
-                                count = AutoBuffBuffs.buffs[j].count;
-
-                                for (int k = 0; k < Main.player[Main.myPlayer].inventory.Length; k++)
-                                {
-                                    if (Main.player[Main.myPlayer].inventory[k].netID == AutoBuffBuffs.buffs[j].itemid)
-                                    {
-                                        if (Main.player[Main.myPlayer].inventory[k].stack <= count)
-                                        {
-                                            count -= Main.player[Main.myPlayer].inventory[k].stack;
-                                            Main.player[Main.myPlayer].inventory[k].TurnToAir();
-
-                                        }
-                                        else
-                                        {
-                                            Main.player[Main.myPlayer].inventory[k].stack -= count;
-                                            break;
-                                        }
-                                    }
-                                }
+                                v.Buy();
                             }
-
                             mp.boughtbuffsavail[j] = true;
                         }
                         else
@@ -123,9 +110,9 @@ namespace AutoBuff.ui
                 };
 
 
-                toggleButtons[i] = new UIHoverImageToggleButton(buttonPlayTexture1, buttonPlayTexture2, "Use buff " + AutoBuffBuffs.buffs[i].name);
+                toggleButtons[i] = new UIHoverImageToggleButton(buttonPlayTexture1, buttonPlayTexture2, "Disable buff " + AutoBuffBuffs.buffs[i].name, "Use buff " + AutoBuffBuffs.buffs[i].name);
                 toggleButtons[i].Left.Set(lleft, 0f);
-                toggleButtons[i].Top.Set(ttop+80, 0f);
+                toggleButtons[i].Top.Set(ttop+40, 0f);
                 toggleButtons[i].Width.Set(32, 0f);
                 toggleButtons[i].Height.Set(32, 0f);
 
@@ -145,6 +132,21 @@ namespace AutoBuff.ui
 
         public override void Update(GameTime gameTime)
         {
+            TooltipPanel.Instance.Update(this);
+
+            for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
+            {
+                if(toggleButtons[i].IsMouseHovering)
+                {
+                    TooltipPanel.Instance.SetInfo(AutoBuffBuffs.buffs[i].name, AutoBuffBuffs.buffs[i].id, AutoBuffBuffs.buffs[i].effect);
+                }
+
+                if (ownedImages[i].IsMouseHovering)
+                {
+                    TooltipPanel.Instance.SetInfo(AutoBuffBuffs.buffs[i].cost, AutoBuffBuffs.buffs[i].name, AutoBuffBuffs.buffs[i].id, AutoBuffBuffs.buffs[i].effect);
+                }
+            }
+
             base.Update(gameTime);
 
             if (visible)
@@ -155,11 +157,12 @@ namespace AutoBuff.ui
                 for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
                 {
                     if (mp.boughtbuffsavail[i]) {
-                        ownedImages[i].SetImage(buttonPlayTexture1);
+                        panel.Append(toggleButtons[i]);
+                        ownedImages[i].Remove();
                     }
                     else
                     {
-                        ownedImages[i].SetImage(buttonPlayTexture2);
+                        toggleButtons[i].Remove();
                     }
                 }
 

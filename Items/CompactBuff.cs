@@ -70,6 +70,10 @@ namespace AutoBuff.Items
                 {
                     if (!AutoBuffBuffs.buffs[i].useMainBuff) {
                         AutoBuffBuffs.buffs[i].func(player);
+                        if (player.HasBuff(AutoBuffBuffs.buffs[i].id))
+                        {
+                            player.ClearBuff(AutoBuffBuffs.buffs[i].id);
+                        }
                     }
                     else
                     {

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using AutoBuff.ui;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -11,7 +13,8 @@ namespace ExampleMod.UI
     // We've added some code to allow the Button to show a text tooltip while hovered. 
     internal class UIHoverImageToggleButton : UIImageButton
     {
-        internal string HoverText;
+        internal string HoverTextChecked;
+        internal string HoverTextUnchecked;
 
         public bool IsChecked = false;
 
@@ -21,14 +24,35 @@ namespace ExampleMod.UI
 
         Texture2D texture_checked;
         Texture2D texture_unchecked;
-        public UIHoverImageToggleButton(Texture2D texture_checked, Texture2D texture_unchecked, string hoverText) : base(texture_unchecked)
+        public UIHoverImageToggleButton(Texture2D texture_checked, Texture2D texture_unchecked, string hoverTextchecked, string hoverTextunchecked) : base(texture_unchecked)
         {
-            HoverText = hoverText;
+            HoverTextChecked = hoverTextchecked;
+            HoverTextUnchecked = hoverTextunchecked;
             this.OnClick += new MouseEvent(PlayButtonClicked);
             this.texture_checked = texture_checked;
             this.texture_unchecked = texture_unchecked;
 
+        }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            
+            if (IsMouseHovering)
+            {
+
+                TooltipPanel.Instance.Show(this);
+                TooltipPanel.Instance.X = Main.mouseX;
+                TooltipPanel.Instance.Y = Main.mouseY;
+                
+
+
+
+            }
+            else
+            {
+                TooltipPanel.Instance.Hide(this);
+            }
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -37,7 +61,7 @@ namespace ExampleMod.UI
 
             if (IsMouseHovering)
             {
-                Main.hoverItemName = HoverText;
+                
             }
         }
 

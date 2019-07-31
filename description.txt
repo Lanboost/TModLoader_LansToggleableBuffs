@@ -1,1 +1,1 @@
-Lan's autobuff is a pretty cool mod, it does...this. Modify this file with a description of your mod.
+Lanboost's AutoBuff mod, converts potions buffs to toggable STATIC buffs for a cost
