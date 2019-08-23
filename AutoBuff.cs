@@ -1,6 +1,7 @@
 using AutoBuff.Items;
 using AutoBuff.ui;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -19,11 +20,16 @@ namespace AutoBuff
         public static AutoBuff instance;
         internal ModHotKey ShowUI;
 
+
+		public List<ModBuffValues> modBuffValues;
+
         public AutoBuff()
 		{
             instance = this;
 
-        }
+			modBuffValues = new List<ModBuffValues>();
+			modBuffValues.Add(new ModBuffValues("Vanilla", AutoBuffVanilaBuffs.getVanilla()));
+		}
 
         internal Panel somethingUI;
         internal TooltipPanel tooltipPanel;
@@ -32,29 +38,55 @@ namespace AutoBuff
 
         public override void Load()
         {
-            // this makes sure that the UI doesn't get opened on the server
-            // the server can't see UI, can it? it's just a command prompt
-            if (!Main.dedServ)
-            {
-                somethingUI = new Panel();
-                somethingUI.Initialize();
-                somethingInterface = new UserInterface();
-                somethingInterface.SetState(somethingUI);
-            }
+			// this makes sure that the UI doesn't get opened on the server
+			// the server can't see UI, can it? it's just a command prompt
+			if (!Main.dedServ)
+			{
+				somethingUI = new Panel();
+				somethingUI.Initialize();
+				somethingInterface = new UserInterface();
+				somethingInterface.SetState(somethingUI);
+			}
 
-            ShowUI = RegisterHotKey("Show UI", "L");
-        }
 
-        public override void Unload()
+			ShowUI = RegisterHotKey("Show UI", "L");
+
+			
+		}
+
+
+		public int getBuffLength() {
+			int c = 0;
+			foreach(var v in modBuffValues)
+			{
+				c +=v.buffs.Length;
+			}
+			return c;
+		}
+
+		public BuffValue getBuff(int index)
+		{
+			int c = index;
+			foreach (var v in modBuffValues)
+			{
+				if(c<v.buffs.Length)
+				{
+					return v.buffs[c];
+				}
+
+				c -= v.buffs.Length;
+			}
+			throw new Exception("Index out of range " + index);
+		}
+
+
+		public override void Unload()
         {
-            instance = this;
+            instance = null;
         }
 
         public override void UpdateUI(GameTime gameTime)
         {
-
-            
-
             // it will only draw if the player is not on the main menu
             if (!Main.gameMenu
                 && Panel.visible)
@@ -84,7 +116,38 @@ namespace AutoBuff
         }
 
 
-        public override void HandlePacket(BinaryReader reader, int whoAmI)
+
+
+		// Messages:
+		// string:"AddModBuffs" - string:Save/load Tag - BuffValue[]:buffValues
+		public override object Call(params object[] args)
+		{
+			try
+			{
+				string message = args[0] as string;
+				if (message == "AddModBuffs")
+				{
+					string savetag = args[1] as string;
+
+					BuffValue[] buffs = args[2] as BuffValue[];
+
+					modBuffValues.Add(new ModBuffValues(savetag, buffs));
+					return "Success";
+				}
+				else
+				{
+					ErrorLogger.Log("AutoBuff Call Error: Unknown Message: " + message);
+				}
+			}
+			catch (Exception e)
+			{
+				ErrorLogger.Log("AutoBuff Call Error: " + e.StackTrace + e.Message);
+			}
+			return "Failure";
+		}
+
+
+		public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             AutoBuffModMessageType msgType = (AutoBuffModMessageType)reader.ReadByte();
             switch (msgType)
@@ -96,7 +159,13 @@ namespace AutoBuff
 
                         AutoBuffPlayer examplePlayer = Main.player[playernumber].GetModPlayer<AutoBuffPlayer>();
 
-                        for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
+						if(examplePlayer.boughtbuffsavail == null)
+						{
+							examplePlayer.boughtbuffsavail = new bool[AutoBuff.instance.getBuffLength()];
+							examplePlayer.buffsavail = new bool[AutoBuff.instance.getBuffLength()];
+						}
+
+                        for (int i = 0; i < this.getBuffLength(); i++)
                         {
                             examplePlayer.boughtbuffsavail[i] = reader.ReadBoolean();
                             examplePlayer.buffsavail[i] = reader.ReadBoolean();
@@ -112,7 +181,14 @@ namespace AutoBuff
 
                         AutoBuffPlayer examplePlayer = Main.player[playernumber].GetModPlayer<AutoBuffPlayer>();
 
-                        for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
+
+						if (examplePlayer.boughtbuffsavail == null)
+						{
+							examplePlayer.boughtbuffsavail = new bool[AutoBuff.instance.getBuffLength()];
+							examplePlayer.buffsavail = new bool[AutoBuff.instance.getBuffLength()];
+						}
+
+						for (int i = 0; i < this.getBuffLength(); i++)
                         {
                             examplePlayer.boughtbuffsavail[i] = reader.ReadBoolean();
                             examplePlayer.buffsavail[i] = reader.ReadBoolean();
@@ -124,7 +200,7 @@ namespace AutoBuff
                             var packet = GetPacket();
                             packet.Write((byte)AutoBuffModMessageType.AutoBuffChange);
                             packet.Write((byte)playernumber);
-                            for (int i = 0; i < AutoBuffBuffs.buffs.Length; i++)
+                            for (int i = 0; i < this.getBuffLength(); i++)
                             {
                                 packet.Write(examplePlayer.boughtbuffsavail[i]);
                                 packet.Write(examplePlayer.buffsavail[i]);

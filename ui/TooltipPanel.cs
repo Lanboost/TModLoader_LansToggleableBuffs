@@ -1,5 +1,6 @@
 ﻿using AutoBuff.ui.layout;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,16 +109,27 @@ namespace AutoBuff.ui
             }
         }
 
-        internal void SetInfo(string name, int id, string effect)
+        internal void SetInfo(int buffid, string name, string effect, Texture2D texture)
         {
             costPanel.children.Clear();
             this.buffName.SetText(name);
-            this.buffIcon.SetImage(Main.buffTexture[id]);
-            this.buffEffect.SetText(effect);
-            lv.Recalculate();
-        }
+            this.buffIcon.SetImage(texture);
 
-        internal void SetInfo(CostValue[] cost, string name, int id, string effect)
+
+			var buffdesc = Lang.GetBuffDescription(buffid);
+
+			int itemRarity = 0;
+			if (Main.meleeBuff[buffid])
+			{
+				itemRarity = -10;
+			}
+
+			BuffLoader.ModifyBuffTip(buffid, ref buffdesc, ref itemRarity);
+			this.buffEffect.SetText(buffdesc);
+			lv.Recalculate();
+		}
+
+        internal void SetInfo(CostValue[] cost, int buffid, string name, string effect, Texture2D texture)
         {
             costPanel.children.Clear();
             var costtopLabel = new UIText("Cost");
@@ -129,7 +141,6 @@ namespace AutoBuff.ui
                 if(v.GetType() == typeof(ItemCostValue))
                 {
                     var ll = new Layout(0, 0, 0, 0, 10, new LayoutHorizontal());
-
                     var costIcon = new UIImage(Main.itemTexture[((ItemCostValue) v).itemid]);
                     costIcon.Height.Set(20, 0);
                     ll.children.Add(new LayoutElementWrapperUIElement(costIcon));
@@ -137,7 +148,12 @@ namespace AutoBuff.ui
                     var costcountLabel = new UIText("x"+ ((ItemCostValue)v).count);
                     costcountLabel.TextColor = new Color(232, 181, 16);
                     ll.children.Add(new LayoutElementWrapperUIElement(costcountLabel));
-                    costPanel.children.Add(ll);
+					
+					var costnamelabel = new UIText(((ItemCostValue)v).itemname);
+					costnamelabel.TextColor = new Color(232, 181, 16);
+					ll.children.Add(new LayoutElementWrapperUIElement(costnamelabel));
+
+					costPanel.children.Add(ll);
                 }
                 else if (v.GetType() == typeof(MoneyCostValue))
                 {
@@ -165,8 +181,17 @@ namespace AutoBuff.ui
 
 
             this.buffName.SetText(name);
-            this.buffIcon.SetImage(Main.buffTexture[id]);
-            this.buffEffect.SetText(effect);
+            this.buffIcon.SetImage(texture);
+			var buffdesc = Lang.GetBuffDescription(buffid);
+
+			int itemRarity = 0;
+			if (Main.meleeBuff[buffid])
+			{
+				itemRarity = -10;
+			}
+
+			BuffLoader.ModifyBuffTip(buffid, ref buffdesc, ref itemRarity);
+			this.buffEffect.SetText(buffdesc);
             lv.Recalculate();
         }
     }

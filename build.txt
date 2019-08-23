@@ -1,3 +1,4 @@
 author = Lanboost
 version = 1.0.0
 displayName = Lan's autobuff
+includePDB = true
