@@ -1,4 +1,4 @@
-﻿using AutoBuff.ui.layout;
+﻿using LansToggleableBuffs.ui.layout;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -11,7 +11,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace AutoBuff.ui
+namespace LansToggleableBuffs.ui
 {
     class TooltipPanel
     {
@@ -63,7 +63,7 @@ namespace AutoBuff.ui
 
                 var ll = new Layout(0, 0, 0, 0, 10, new LayoutHorizontal());
 
-                buffIcon = new UIImage(ModContent.GetTexture("AutoBuff/ui/unowned"));
+                buffIcon = new UIImage(ModContent.GetTexture("LansToggleableBuffs/ui/unowned"));
                 ll.children.Add(new LayoutElementWrapperUIElement(buffIcon));
 
                 buffName = new UIText("TestName");

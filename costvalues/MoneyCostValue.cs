@@ -1,6 +1,6 @@
 ﻿using Terraria;
 
-namespace AutoBuff
+namespace LansToggleableBuffs
 {
 	public class MoneyCostValue: CostValue
     {
@@ -15,12 +15,12 @@ namespace AutoBuff
         {
             Main.LocalPlayer.CanBuyItem(cost);
 
-            return AutoBuff.DEBUG || Main.LocalPlayer.CanBuyItem(cost);
+            return LansToggleableBuffs.DEBUG || Main.LocalPlayer.CanBuyItem(cost);
         }
 
         public void Buy()
         {
-            if (!AutoBuff.DEBUG)
+            if (!LansToggleableBuffs.DEBUG)
             {
                 Main.LocalPlayer.BuyItem(cost);
             }

@@ -1,4 +1,6 @@
+displayName = Lan's Toggleable Buffs
 author = Lanboost
-version = 1.0.0
-displayName = Lan's autobuff
+version = 0.1
 includePDB = true
+includeSource = true
+homepage = https://github.com/Lanboost/TModLoader_LansToggleableBuffs

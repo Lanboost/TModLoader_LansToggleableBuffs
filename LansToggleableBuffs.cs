@@ -1,6 +1,6 @@
-using AutoBuff.Items;
-using AutoBuff.ui;
+using LansToggleableBuffs.ui;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,26 +9,26 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace AutoBuff
+namespace LansToggleableBuffs
 {
-	class AutoBuff : Mod
+	class LansToggleableBuffs : Mod
 	{
 
         public static bool DEBUG = false;
 
 
-        public static AutoBuff instance;
+        public static LansToggleableBuffs instance;
         internal ModHotKey ShowUI;
 
 
 		public List<ModBuffValues> modBuffValues;
 
-        public AutoBuff()
+        public LansToggleableBuffs()
 		{
             instance = this;
 
 			modBuffValues = new List<ModBuffValues>();
-			modBuffValues.Add(new ModBuffValues("Vanilla", AutoBuffVanilaBuffs.getVanilla()));
+			modBuffValues.Add(new ModBuffValues("Vanilla", VanilaBuffs.getVanilla()));
 		}
 
         internal Panel somethingUI;
@@ -49,7 +49,7 @@ namespace AutoBuff
 			}
 
 
-			ShowUI = RegisterHotKey("Show UI", "L");
+			ShowUI = RegisterHotKey("Show UI", Keys.L.ToString());
 
 			
 		}
@@ -100,7 +100,7 @@ namespace AutoBuff
             int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
             if (mouseTextIndex != -1)
             {
-                layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer("AutoBuff", DrawSomethingUI, InterfaceScaleType.UI));
+                layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer("LansToggleableBuffs", DrawSomethingUI, InterfaceScaleType.UI));
             }
         }
 
@@ -136,12 +136,12 @@ namespace AutoBuff
 				}
 				else
 				{
-					ErrorLogger.Log("AutoBuff Call Error: Unknown Message: " + message);
+					ErrorLogger.Log("LansToggleableBuffs Call Error: Unknown Message: " + message);
 				}
 			}
 			catch (Exception e)
 			{
-				ErrorLogger.Log("AutoBuff Call Error: " + e.StackTrace + e.Message);
+				ErrorLogger.Log("LansToggleableBuffs Call Error: " + e.StackTrace + e.Message);
 			}
 			return "Failure";
 		}
@@ -149,20 +149,20 @@ namespace AutoBuff
 
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            AutoBuffModMessageType msgType = (AutoBuffModMessageType)reader.ReadByte();
+            ModMessageType msgType = (ModMessageType)reader.ReadByte();
             switch (msgType)
             {
                 // This message sent by the server to initialize the Volcano Tremor on clients
-                case AutoBuffModMessageType.AutoBuffSyncPlayer:
+                case ModMessageType.SyncPlayer:
                     {
                         byte playernumber = reader.ReadByte();
 
-                        AutoBuffPlayer examplePlayer = Main.player[playernumber].GetModPlayer<AutoBuffPlayer>();
+						LPlayer examplePlayer = Main.player[playernumber].GetModPlayer<LPlayer>();
 
 						if(examplePlayer.boughtbuffsavail == null)
 						{
-							examplePlayer.boughtbuffsavail = new bool[AutoBuff.instance.getBuffLength()];
-							examplePlayer.buffsavail = new bool[AutoBuff.instance.getBuffLength()];
+							examplePlayer.boughtbuffsavail = new bool[LansToggleableBuffs.instance.getBuffLength()];
+							examplePlayer.buffsavail = new bool[LansToggleableBuffs.instance.getBuffLength()];
 						}
 
                         for (int i = 0; i < this.getBuffLength(); i++)
@@ -172,20 +172,20 @@ namespace AutoBuff
                         }
                         break;
                     }
-                case AutoBuffModMessageType.AutoBuffChange:
+                case ModMessageType.Change:
                     {
                         
 
                         byte playernumber = reader.ReadByte();
 
 
-                        AutoBuffPlayer examplePlayer = Main.player[playernumber].GetModPlayer<AutoBuffPlayer>();
+                        LPlayer examplePlayer = Main.player[playernumber].GetModPlayer<LPlayer>();
 
 
 						if (examplePlayer.boughtbuffsavail == null)
 						{
-							examplePlayer.boughtbuffsavail = new bool[AutoBuff.instance.getBuffLength()];
-							examplePlayer.buffsavail = new bool[AutoBuff.instance.getBuffLength()];
+							examplePlayer.boughtbuffsavail = new bool[LansToggleableBuffs.instance.getBuffLength()];
+							examplePlayer.buffsavail = new bool[LansToggleableBuffs.instance.getBuffLength()];
 						}
 
 						for (int i = 0; i < this.getBuffLength(); i++)
@@ -198,7 +198,7 @@ namespace AutoBuff
                         {
 
                             var packet = GetPacket();
-                            packet.Write((byte)AutoBuffModMessageType.AutoBuffChange);
+                            packet.Write((byte)ModMessageType.Change);
                             packet.Write((byte)playernumber);
                             for (int i = 0; i < this.getBuffLength(); i++)
                             {
@@ -215,10 +215,10 @@ namespace AutoBuff
 
 
 
-        internal enum AutoBuffModMessageType : byte
+        internal enum ModMessageType : byte
         {
-            AutoBuffSyncPlayer,
-            AutoBuffChange,
+            SyncPlayer,
+            Change,
         }
     }
 }

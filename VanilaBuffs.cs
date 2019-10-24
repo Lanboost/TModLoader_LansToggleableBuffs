@@ -6,10 +6,10 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace AutoBuff
+namespace LansToggleableBuffs
 {
 
-	public class AutoBuffVanilaBuffs
+	public class VanilaBuffs
     {
 
 

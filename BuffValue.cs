@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace AutoBuff
+namespace LansToggleableBuffs
 {
 	public class BuffValue
     {

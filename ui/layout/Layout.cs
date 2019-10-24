@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.UI;
 
-namespace AutoBuff.ui.layout
+namespace LansToggleableBuffs.ui.layout
 {
 
     class LayoutElement

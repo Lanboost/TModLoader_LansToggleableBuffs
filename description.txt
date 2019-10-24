@@ -1,1 +1,1 @@
-Lanboost's AutoBuff mod, converts potions buffs to toggable STATIC buffs for a cost
+Purchaseable permenant toggleable buffs, no more potion farming and afraid of dying!

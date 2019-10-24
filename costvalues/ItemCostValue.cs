@@ -1,6 +1,6 @@
 ﻿using Terraria;
 
-namespace AutoBuff
+namespace LansToggleableBuffs
 {
 	public class ItemCostValue: CostValue
     {
@@ -30,12 +30,12 @@ namespace AutoBuff
                 }
             }
 
-            return AutoBuff.DEBUG || count >= this.count;
+            return LansToggleableBuffs.DEBUG || count >= this.count;
         }
 
         public void Buy()
         {
-            if (!AutoBuff.DEBUG)
+            if (!LansToggleableBuffs.DEBUG)
             {
                 int count = this.count;
 

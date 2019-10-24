@@ -1,4 +1,4 @@
-﻿namespace AutoBuff
+﻿namespace LansToggleableBuffs
 {
 	public interface CostValue
     {

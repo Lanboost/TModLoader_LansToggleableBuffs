@@ -1,4 +1,4 @@
-﻿using AutoBuff.ui;
+﻿using LansToggleableBuffs.ui;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +9,11 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static AutoBuff.AutoBuff;
+using static LansToggleableBuffs.LansToggleableBuffs;
 
-namespace AutoBuff.Items
+namespace LansToggleableBuffs
 {
-    class AutoBuffPlayer: ModPlayer
+    class LPlayer: ModPlayer
     {
 
 		public bool[] boughtbuffsavail;
@@ -22,18 +22,18 @@ namespace AutoBuff.Items
         public override bool CloneNewInstances => false;
 
 
-		public AutoBuffPlayer()
+		public LPlayer()
 		{
-			var size = AutoBuff.instance.getBuffLength();
+			var size = LansToggleableBuffs.instance.getBuffLength();
 			boughtbuffsavail = new bool[size];
 			buffsavail = new bool[size];
 		}
 
 		public override void clientClone(ModPlayer clientClone)
         {
-            AutoBuffPlayer clone = clientClone as AutoBuffPlayer;
+            LPlayer clone = clientClone as LPlayer;
 
-			var size = AutoBuff.instance.getBuffLength();
+			var size = LansToggleableBuffs.instance.getBuffLength();
 			for (int i = 0; i < size; i++)
             {
                 clone.boughtbuffsavail[i] = boughtbuffsavail[i];
@@ -44,9 +44,9 @@ namespace AutoBuff.Items
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
             ModPacket packet = mod.GetPacket();
-            packet.Write((byte)AutoBuffModMessageType.AutoBuffSyncPlayer);
+            packet.Write((byte)ModMessageType.SyncPlayer);
             packet.Write((byte)player.whoAmI);
-            for (int i = 0; i < AutoBuff.instance.getBuffLength(); i++)
+            for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
             {
                 packet.Write(boughtbuffsavail[i]);
                 packet.Write(buffsavail[i]);
@@ -57,10 +57,10 @@ namespace AutoBuff.Items
         public override void SendClientChanges(ModPlayer clientPlayer)
         {
             // Here we would sync something like an RPG stat whenever the player changes it.
-            AutoBuffPlayer clone = clientPlayer as AutoBuffPlayer;
+            LPlayer clone = clientPlayer as LPlayer;
             bool send = false;
 
-            for (int i = 0; i < AutoBuff.instance.getBuffLength(); i++)
+            for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
             {
                 if (clone.boughtbuffsavail[i] != boughtbuffsavail[i])
                 {
@@ -77,9 +77,9 @@ namespace AutoBuff.Items
             if (send)
             {
                 var packet = mod.GetPacket();
-                packet.Write((byte)AutoBuffModMessageType.AutoBuffChange);
+                packet.Write((byte)ModMessageType.Change);
                 packet.Write((byte)player.whoAmI);
-                for (int i = 0; i < AutoBuff.instance.getBuffLength(); i++)
+                for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
                 {
                     packet.Write(boughtbuffsavail[i]);
                     packet.Write(buffsavail[i]);
@@ -93,7 +93,7 @@ namespace AutoBuff.Items
 			int buffIndex = 0;
 
 			var tagComp = new TagCompound();
-			foreach(var v in AutoBuff.instance.modBuffValues)
+			foreach(var v in LansToggleableBuffs.instance.modBuffValues)
 			{
 				byte[] b1 = new byte[v.buffs.Length];
 				byte[] b2 = new byte[v.buffs.Length];
@@ -121,10 +121,10 @@ namespace AutoBuff.Items
         {
 			int buffIndex = 0;
 
-			var size = AutoBuff.instance.getBuffLength();
+			var size = LansToggleableBuffs.instance.getBuffLength();
 
 			var tagComp = new TagCompound();
-			foreach (var v in AutoBuff.instance.modBuffValues)
+			foreach (var v in LansToggleableBuffs.instance.modBuffValues)
 			{
 				try {
 					var tempTag = tag.Get<TagCompound>(v.saveTag);
@@ -187,7 +187,7 @@ namespace AutoBuff.Items
 
 
 
-            if (((AutoBuff)mod).ShowUI.JustPressed)
+            if (((LansToggleableBuffs)mod).ShowUI.JustPressed)
             {
                 Panel.visible = !Panel.visible;
             }
@@ -197,11 +197,11 @@ namespace AutoBuff.Items
         public override void PreUpdate()
         {
 
-			var mp = player.GetModPlayer<AutoBuffPlayer>();
+			var mp = player.GetModPlayer<LPlayer>();
 		
-			for (int i = 0; i < AutoBuff.instance.getBuffLength(); i++)
+			for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
 			{
-				var buffId = AutoBuff.instance.getBuff(i).id;
+				var buffId = LansToggleableBuffs.instance.getBuff(i).id;
 				if (mp.boughtbuffsavail[i])
 				{
 					if (mp.buffsavail[i])

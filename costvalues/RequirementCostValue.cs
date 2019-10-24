@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoBuff
+namespace LansToggleableBuffs
 {
 	public class RequirementCostValue : CostValue
     {

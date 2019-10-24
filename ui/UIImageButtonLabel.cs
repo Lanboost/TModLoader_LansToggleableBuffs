@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 
-namespace AutoBuff.ui
+namespace LansToggleableBuffs.ui
 {
     class UIImageButtonLabel : UIImageButton
     {

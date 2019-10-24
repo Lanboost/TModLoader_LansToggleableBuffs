@@ -1,5 +1,4 @@
-﻿using AutoBuff.Items;
-using ExampleMod.UI;
+﻿using ExampleMod.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -12,7 +11,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace AutoBuff.ui
+namespace LansToggleableBuffs.ui
 {
     class Panel : UIState
     {
@@ -47,7 +46,7 @@ namespace AutoBuff.ui
 			panel.Top.Set(100, 0); //this is the distance between the top of the screen and the top of the panel
 
 
-			var buffSize = AutoBuff.instance.getBuffLength();
+			var buffSize = LansToggleableBuffs.instance.getBuffLength();
 
 
 
@@ -63,9 +62,9 @@ namespace AutoBuff.ui
 
 			panel.Height.Set((buffSize / 20 + 1) * 130 + 20, 0);
 
-			buttonPlayTexture1 = ModContent.GetTexture("AutoBuff/ui/checkbox");
-			buttonPlayTexture2 = ModContent.GetTexture("AutoBuff/ui/checkboxunchecked");
-			var unownedTexture = ModContent.GetTexture("AutoBuff/ui/unowned");
+			buttonPlayTexture1 = ModContent.GetTexture("LansToggleableBuffs/ui/checkbox");
+			buttonPlayTexture2 = ModContent.GetTexture("LansToggleableBuffs/ui/checkboxunchecked");
+			var unownedTexture = ModContent.GetTexture("LansToggleableBuffs/ui/unowned");
 
 			ownedImages = new UIImageButtonLabel[buffSize];
 			toggleButtons = new UIHoverImageToggleButton[buffSize];
@@ -80,7 +79,7 @@ namespace AutoBuff.ui
 
 				//ugly haccck
 
-				var buff = AutoBuff.instance.getBuff(i);
+				var buff = LansToggleableBuffs.instance.getBuff(i);
 
 				buff.texture = Main.buffTexture[buff.id];
 
@@ -102,9 +101,9 @@ namespace AutoBuff.ui
 				{
 
 
-					var tempBuff = AutoBuff.instance.getBuff(j);
+					var tempBuff = LansToggleableBuffs.instance.getBuff(j);
 
-					var mp = Main.player[Main.myPlayer].GetModPlayer<AutoBuffPlayer>();
+					var mp = Main.player[Main.myPlayer].GetModPlayer<LPlayer>();
 					if (!mp.boughtbuffsavail[j])
 					{
 						bool canbuy = true;
@@ -145,7 +144,7 @@ namespace AutoBuff.ui
 
 				toggleButtons[i].OnChecked += delegate (bool val)
 				{
-					Main.player[Main.myPlayer].GetModPlayer<AutoBuffPlayer>().buffsavail[j] = val;
+					Main.player[Main.myPlayer].GetModPlayer<LPlayer>().buffsavail[j] = val;
 				};
 			}
 
@@ -161,9 +160,9 @@ namespace AutoBuff.ui
 			}
             TooltipPanel.Instance.Update(this);
 
-            for (int i = 0; i < AutoBuff.instance.getBuffLength(); i++)
+            for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
             {
-				var buff = AutoBuff.instance.getBuff(i);
+				var buff = LansToggleableBuffs.instance.getBuff(i);
                 if(toggleButtons[i].IsMouseHovering)
                 {
                     TooltipPanel.Instance.SetInfo(buff.id, buff.name, buff.effect, buff.texture);
@@ -180,9 +179,9 @@ namespace AutoBuff.ui
             if (visible)
             {
                 
-                var mp = Main.player[Main.myPlayer].GetModPlayer<AutoBuffPlayer>();
+                var mp = Main.player[Main.myPlayer].GetModPlayer<LPlayer>();
 
-                for (int i = 0; i < AutoBuff.instance.getBuffLength(); i++)
+                for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
                 {
                     if (mp.boughtbuffsavail[i]) {
                         panel.Append(toggleButtons[i]);
@@ -195,7 +194,7 @@ namespace AutoBuff.ui
 					}
                 }
 
-                for (int i = 0; i < AutoBuff.instance.getBuffLength(); i++)
+                for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
                 {
                     toggleButtons[i].IsChecked = mp.buffsavail[i];
                     if (mp.buffsavail[i])
