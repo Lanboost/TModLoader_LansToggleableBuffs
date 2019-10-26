@@ -1,6 +1,6 @@
 displayName = Lan's Toggleable Buffs
 author = Lanboost
-version = 0.1
+version = 0.2
 includePDB = true
 includeSource = true
 homepage = https://github.com/Lanboost/TModLoader_LansToggleableBuffs
