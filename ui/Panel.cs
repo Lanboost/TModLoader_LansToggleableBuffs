@@ -1,4 +1,5 @@
 ﻿using ExampleMod.UI;
+using LansToggleableBuffs.ui.layout;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,9 +19,9 @@ namespace LansToggleableBuffs.ui
         public static bool visible = false;
         public DragableUIPanel panel;
 
-        UIImageButtonLabel[] ownedImages;
-        UIHoverImageToggleButton[] toggleButtons;
-        Texture2D buttonPlayTexture1;
+		LayoutWrapperUIElement panelwrapper;
+
+		Texture2D buttonPlayTexture1;
         Texture2D buttonPlayTexture2;
 
 		bool created = false;
@@ -29,6 +30,8 @@ namespace LansToggleableBuffs.ui
 
             
         }
+
+		bool needValidate = false;
 
 		public void create()
 		{
@@ -40,115 +43,138 @@ namespace LansToggleableBuffs.ui
 			// if you set this to true, it will show up in game
 			//visible = false;
 
+			buttonPlayTexture1 = ModContent.GetTexture("LansToggleableBuffs/ui/checkbox");
+			buttonPlayTexture2 = ModContent.GetTexture("LansToggleableBuffs/ui/checkboxunchecked");
+
 			panel = new DragableUIPanel(); //initialize the panel
 										   // ignore these extra 0s
 			panel.Left.Set(800, 0); //this makes the distance between the left of the screen and the left of the panel 500 pixels (somewhere by the middle)
 			panel.Top.Set(100, 0); //this is the distance between the top of the screen and the top of the panel
+			this.Append(panel);
 
+			panelwrapper = new LayoutWrapperUIElement(panel, 10, 10, 10, 10, 10, new LayoutVertical());
 
+			Revalidate();
+		}
+
+		public void Revalidate() {
+			needValidate = false;
 			var buffSize = LansToggleableBuffs.instance.getBuffLength();
-
-
-
-			if (buffSize > 20)
-			{
-				panel.Width.Set(20 * 40 + 20, 0);
-			}
-			else
-			{
-				panel.Width.Set(buffSize * 40 + 20, 0);
-			}
-
-
-			panel.Height.Set((buffSize / 20 + 1) * 130 + 20, 0);
-
-			buttonPlayTexture1 = ModContent.GetTexture("LansToggleableBuffs/ui/checkbox");
-			buttonPlayTexture2 = ModContent.GetTexture("LansToggleableBuffs/ui/checkboxunchecked");
+			
 			var unownedTexture = ModContent.GetTexture("LansToggleableBuffs/ui/unowned");
+			var mp = Main.player[Main.myPlayer].GetModPlayer<LPlayer>();
+			panelwrapper.children.Clear();
 
-			ownedImages = new UIImageButtonLabel[buffSize];
-			toggleButtons = new UIHoverImageToggleButton[buffSize];
-
-			int top = 10;
-			int left = 10;
-			int leftstep = 40;
-			for (int i = 0; i < buffSize; i++)
+			int buffIndex = 0;
+			foreach (var modBuffValues in LansToggleableBuffs.instance.modBuffValues)
 			{
-				int lleft = left + leftstep * (i % 20);
-				int ttop = top + (10 + 3 * leftstep) * (i / 20);
+				var modbuffpanel = new Layout(0, 0, 0, 0, 10, new LayoutVertical());
 
-				//ugly haccck
+				var modlabel = new UIText(""+modBuffValues.saveTag);
+				modlabel.TextColor = new Color(232, 181, 16);
+				modbuffpanel.children.Add(new LayoutElementWrapperUIElement(modlabel));
 
-				var buff = LansToggleableBuffs.instance.getBuff(i);
+				var modbuffgridpanel = new Layout(0, 0, 0, 0, 10, new LayoutGrid(24));
+				modbuffpanel.children.Add(modbuffgridpanel);
 
-				buff.texture = Main.buffTexture[buff.id];
+				//populate modbuffgridpanel
 
-				int j = i;
-				UIImage icon = new UIImage(buff.texture);
-				icon.Left.Set(lleft, 0f);
-				icon.Top.Set(ttop, 0f);
-				icon.Width.Set(32, 0f);
-				icon.Height.Set(32, 0f);
-				panel.Append(icon);
-
-				ownedImages[i] = new UIImageButtonLabel(unownedTexture, "Buy buff " + buff.name);
-				ownedImages[i].Left.Set(lleft, 0f);
-				ownedImages[i].Top.Set(ttop + 40, 0f);
-				ownedImages[i].Width.Set(32, 0f);
-				ownedImages[i].Height.Set(32, 0f);
-				panel.Append(ownedImages[i]);
-				ownedImages[i].OnClick += delegate (UIMouseEvent evt, UIElement listeningElement)
+				foreach (var buffValue in modBuffValues.buffs)
 				{
+					var currentBuffIndex = buffIndex;
+					buffIndex += 1;
 
+					var buffpanel = new Layout(0, 0, 0, 0, 10, new LayoutVertical());
 
-					var tempBuff = LansToggleableBuffs.instance.getBuff(j);
+					var buff = LansToggleableBuffs.instance.getBuff(currentBuffIndex);
 
-					var mp = Main.player[Main.myPlayer].GetModPlayer<LPlayer>();
-					if (!mp.boughtbuffsavail[j])
+					buff.texture = Main.buffTexture[buff.id];
+
 					{
-						bool canbuy = true;
-						foreach (var v in tempBuff.cost)
+						UIImage icon = new UIImage(buff.texture);
+						buffpanel.children.Add(new LayoutElementWrapperUIElement(icon));
+						
+						if (!mp.boughtbuffsavail[currentBuffIndex])
 						{
-							if (!v.CheckBuy())
-							{
-								canbuy = false;
-								break;
-							}
-						}
+							var ownedImages = new UIImageButtonLabel(unownedTexture, "Buy buff " + buff.name);
 
-						if (canbuy)
-						{
-							foreach (var v in tempBuff.cost)
+							buffpanel.children.Add(new LayoutElementWrapperUIElement(ownedImages));
+
+							ownedImages.OnClick += delegate (UIMouseEvent evt, UIElement listeningElement)
 							{
-								v.Buy();
-							}
-							mp.boughtbuffsavail[j] = true;
+								var tempBuff = LansToggleableBuffs.instance.getBuff(currentBuffIndex);
+								
+								if (!mp.boughtbuffsavail[currentBuffIndex])
+								{
+									bool canbuy = true;
+									foreach (var v in tempBuff.cost)
+									{
+										if (!v.CheckBuy())
+										{
+											canbuy = false;
+											break;
+										}
+									}
+
+									if (canbuy)
+									{
+										foreach (var v in tempBuff.cost)
+										{
+											v.Buy();
+										}
+										mp.boughtbuffsavail[currentBuffIndex] = true;
+										needValidate = true;
+									}
+									else
+									{
+										Main.NewText("You do not have enough items to buy this!", new Color(255, 0, 0));
+									}
+								}
+							};
+
+							ownedImages.OnMouseOver += delegate (UIMouseEvent evt, UIElement listeningElement)
+							{
+								TooltipPanel.Instance.SetInfo(buff.cost, buff.id, buff.name, buff.effect, buff.texture);
+							};
 						}
 						else
 						{
-							Main.NewText("You do not have enough items to buy this!", new Color(255, 0, 0));
+							var toggleButtons = new UIHoverImageToggleButton(buttonPlayTexture1, buttonPlayTexture2, "Disable buff " + buff.name, "Use buff " + buff.name);
+
+							toggleButtons.IsChecked = mp.buffsavail[currentBuffIndex];
+							if (mp.buffsavail[currentBuffIndex])
+							{
+								toggleButtons.SetImage(buttonPlayTexture1);
+							}
+							else
+							{
+								toggleButtons.SetImage(buttonPlayTexture2);
+							}
+
+							toggleButtons.OnChecked += delegate (bool val)
+							{
+								Main.player[Main.myPlayer].GetModPlayer<LPlayer>().buffsavail[currentBuffIndex] = val;
+								needValidate = true;
+							};
+
+							toggleButtons.OnMouseOver += delegate (UIMouseEvent evt, UIElement listeningElement)
+							{
+								TooltipPanel.Instance.SetInfo(buff.id, buff.name, buff.effect, buff.texture);
+							};
+
+							buffpanel.children.Add(new LayoutElementWrapperUIElement(toggleButtons));
 						}
 					}
-				};
 
+					modbuffgridpanel.children.Add(buffpanel);
+				}
 
-				toggleButtons[i] = new UIHoverImageToggleButton(buttonPlayTexture1, buttonPlayTexture2, "Disable buff " + buff.name, "Use buff " + buff.name);
-				toggleButtons[i].Left.Set(lleft, 0f);
-				toggleButtons[i].Top.Set(ttop + 40, 0f);
-				toggleButtons[i].Width.Set(32, 0f);
-				toggleButtons[i].Height.Set(32, 0f);
-
-
-
-				panel.Append(toggleButtons[i]);
-
-				toggleButtons[i].OnChecked += delegate (bool val)
-				{
-					Main.player[Main.myPlayer].GetModPlayer<LPlayer>().buffsavail[j] = val;
-				};
+				panelwrapper.children.Add(modbuffpanel);
 			}
 
-			Append(panel); //appends the panel to the UIState
+			panelwrapper.Recalculate();
+
+			
 		}
 
 
@@ -158,8 +184,51 @@ namespace LansToggleableBuffs.ui
 			{
 				create();
 			}
-            TooltipPanel.Instance.Update(this);
+			base.Update(gameTime);
+			TooltipPanel.Instance.Update(this);
 
+			if(needValidate)
+			{
+				Revalidate();
+			}
+
+			/*
+			if (visible)
+			{
+
+				var mp = Main.player[Main.myPlayer].GetModPlayer<LPlayer>();
+
+				for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
+				{
+					if (mp.boughtbuffsavail[i])
+					{
+						panel.Append(toggleButtons[i]);
+						ownedImages[i].Remove();
+					}
+					else
+					{
+						toggleButtons[i].Remove();
+						panel.Append(ownedImages[i]);
+					}
+				}
+
+				for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
+				{
+					toggleButtons[i].IsChecked = mp.buffsavail[i];
+					if (mp.buffsavail[i])
+					{
+						toggleButtons[i].SetImage(buttonPlayTexture1);
+					}
+					else
+					{
+						toggleButtons[i].SetImage(buttonPlayTexture2);
+					}
+				}
+
+			}
+
+
+			
             for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
             {
 				var buff = LansToggleableBuffs.instance.getBuff(i);
@@ -173,9 +242,7 @@ namespace LansToggleableBuffs.ui
                     TooltipPanel.Instance.SetInfo(buff.cost, buff.id, buff.name, buff.effect, buff.texture);
                 }
             }
-
-            base.Update(gameTime);
-
+			
             if (visible)
             {
                 
@@ -208,6 +275,7 @@ namespace LansToggleableBuffs.ui
                 }
                 
             }
-        }
-    }
+			*/
+		}
+	}
 }

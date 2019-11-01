@@ -54,6 +54,67 @@ namespace LansToggleableBuffs
 			
 		}
 
+		public override void PostSetupContent()
+		{
+			base.PostSetupContent();
+
+
+
+			/*Item item = new Item();
+			for (int i = 0; i < ItemID.Count; i++)
+			{
+				item.SetDefaults(i);
+
+				if (item.buffType >= 1)
+				{
+					var t = "Item id:" + item.type + " gives buff " + item.buffType + " which is ";
+					Console.WriteLine(t);
+				}
+			}*/
+
+			var modBuffs = new Dictionary<string, List<BuffValue>>();
+
+			for (int i = 0; i < ItemLoader.ItemCount; i++)
+			{
+				var mitem = ItemLoader.GetItem(i);
+
+				
+				if (mitem != null) {
+
+
+					
+
+					if (mitem.item.buffType >= 1)
+					{
+						var buff = BuffLoader.GetBuff(mitem.item.buffType);
+						if (buff != null && !Main.lightPet[mitem.item.buffType] && !Main.vanityPet[mitem.item.buffType] && !Main.debuff[mitem.item.buffType] && !mitem.item.summon)
+						{
+
+
+
+							if (!modBuffs.ContainsKey(mitem.mod.Name))
+							{
+								modBuffs.Add(mitem.mod.Name, new List<BuffValue>());
+							}
+
+							var bvalue = new BuffValue(false, mitem.item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.mod.Name, new CostValue[] { new ItemCostValue(mitem.item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
+
+							modBuffs[mitem.mod.Name].Add(bvalue);
+							
+							
+						}
+					}
+				}
+				
+			}
+
+			foreach(var v in modBuffs)
+			{
+				modBuffValues.Add(new ModBuffValues(v.Key, v.Value.ToArray()));
+			}
+
+		}
+
 
 		public int getBuffLength() {
 			int c = 0;
