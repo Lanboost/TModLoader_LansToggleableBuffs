@@ -17,7 +17,7 @@ namespace LansToggleableBuffs.ui
     class Panel : UIState
     {
         public static bool visible = false;
-        public DragableUIPanel panel;
+        public UIScrollPanel panel;
 
 		LayoutWrapperUIElement panelwrapper;
 
@@ -46,13 +46,13 @@ namespace LansToggleableBuffs.ui
 			buttonPlayTexture1 = ModContent.GetTexture("LansToggleableBuffs/ui/checkbox");
 			buttonPlayTexture2 = ModContent.GetTexture("LansToggleableBuffs/ui/checkboxunchecked");
 
-			panel = new DragableUIPanel(); //initialize the panel
+			panel = new UIScrollPanel(); //initialize the panel
 										   // ignore these extra 0s
-			panel.Left.Set(800, 0); //this makes the distance between the left of the screen and the left of the panel 500 pixels (somewhere by the middle)
-			panel.Top.Set(100, 0); //this is the distance between the top of the screen and the top of the panel
+			panel.Left.Set(Main.screenWidth/2-500, 0); //this makes the distance between the left of the screen and the left of the panel 500 pixels (somewhere by the middle)
+			panel.Top.Set(Main.screenHeight/2-300, 0); //this is the distance between the top of the screen and the top of the panel
 			this.Append(panel);
 
-			panelwrapper = new LayoutWrapperUIElement(panel, 10, 10, 10, 10, 10, new LayoutVertical());
+			panelwrapper = new LayoutWrapperUIElement(panel, 0, 0, 0, 0, 10, new LayoutVertical());
 
 			Revalidate();
 		}

@@ -2,6 +2,11 @@
  Purchaseable permenant toggleable buffs, no more potion farming and afraid of dying!
 
 
+# Change log:
+V. 0.2.2:
+
+	- Wrapped the UI inside a "badly done" scrollpanel, hopefully this did not fuck everything
+
 # Other TModLoader mods by me:
 * [Lanboosts Auto Join Team](https://github.com/Lanboost/TModLoader_LansAutoJoinTeam)
   * Automatically joins the red team whenever you play terraria, perfect for lazy people!
@@ -29,5 +34,10 @@ NOTE: Actually sends the explored data on the network, could be done locally but
   * Extension of the mod Lan's Toggleable Buffs but for the mod Calamity!
 * [Lanboosts Uncraft Items](https://github.com/Lanboost/TModLoader_LansUncraftItems)
   * Make you able to uncraft items, meaning you will destroy the item and get the resource back (or a % of it), this is done with the hammer button to the right of inventory!
+
+
+Now supports disabled token recipes for: ImkSushisMod and TokenMod
+* [Lanboosts Unlimited Buff Slots](https://github.com/Lanboost/TModLoader_LansUnlimitedBuffSlots)
+  * Gives the player an extra 200 buff slots so buffs doesn't override each other. Now uses TModLoader's internal code for this.
 
  Contact me by issues for questions!

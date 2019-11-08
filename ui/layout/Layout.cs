@@ -36,7 +36,6 @@ namespace LansToggleableBuffs.ui.layout
         public virtual void Recalculate()
         {
         }
-
     }
 
     class LayoutElementWrapperUIElement: LayoutElement
@@ -179,9 +178,21 @@ namespace LansToggleableBuffs.ui.layout
             base.Recalculate();
 
 
+			if (elem.GetType() == typeof(UIScrollPanel))
+			{
+				foreach (var c in children)
+				{
+					c.SetY(c.y + ((UIScrollPanel)elem).getOffset());
+					c.Recalculate();
+				}
+			}
+
+
             elem.Height.Set(this.height,0);
             elem.Width.Set(this.width, 0);
-        }
+			elem.Recalculate();
+
+		}
     }
 
     interface ILayoutType
