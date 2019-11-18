@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using static Terraria.ModLoader.ModContent;
 
 namespace LansToggleableBuffs
 {
@@ -30,12 +31,12 @@ namespace LansToggleableBuffs
                 }
             }
 
-            return LansToggleableBuffs.DEBUG || count >= this.count;
+            return GetInstance<Config>().Debug || count >= this.count;
         }
 
         public void Buy()
         {
-            if (!LansToggleableBuffs.DEBUG)
+            if (!GetInstance<Config>().Debug)
             {
                 int count = this.count;
 

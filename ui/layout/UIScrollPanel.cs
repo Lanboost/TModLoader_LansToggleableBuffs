@@ -40,7 +40,7 @@ namespace LansToggleableBuffs.ui.layout
 		{
 			CalculatedStyle dimensions = base.GetDimensions();
 			Point point = new Point((int)this.Left.Pixels-10, (int)this.Top.Pixels-10);
-			Point point2 = new Point(point.X + (int)panelWidth+40 - UIScrollPanel.CORNER_SIZE, point.Y + (int)panelHeight + 20 - UIScrollPanel.CORNER_SIZE);
+			Point point2 = new Point(point.X + (int)panelWidth+30 - UIScrollPanel.CORNER_SIZE, point.Y + (int)panelHeight + 20 - UIScrollPanel.CORNER_SIZE);
 			int width = point2.X - point.X - UIScrollPanel.CORNER_SIZE;
 			int height = point2.Y - point.Y - UIScrollPanel.CORNER_SIZE;
 			spriteBatch.Draw(texture, new Rectangle(point.X, point.Y, UIScrollPanel.CORNER_SIZE, UIScrollPanel.CORNER_SIZE), new Rectangle?(new Rectangle(0, 0, UIScrollPanel.CORNER_SIZE, UIScrollPanel.CORNER_SIZE)), color);
@@ -82,7 +82,7 @@ namespace LansToggleableBuffs.ui.layout
 			}
 
 			Scrollbar.Top.Pixels = this.Top.Pixels;
-			Scrollbar.Left.Pixels = this.Left.Pixels + panelWidth + 10;
+			Scrollbar.Left.Pixels = this.Left.Pixels + panelWidth + 0;
 			Scrollbar.Height.Pixels = panelHeight;
 			Scrollbar.Recalculate();
 			Scrollbar.Draw(panelSpriteBatch);
@@ -95,7 +95,15 @@ namespace LansToggleableBuffs.ui.layout
 			r.ScissorTestEnable = true;
 
 			innerSpriteBatch.GraphicsDevice.RasterizerState = r;
-			innerSpriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle((int)this.Left.Pixels, (int)this.Top.Pixels, (int)panelWidth, (int)panelHeight);
+			/*try
+			{*/
+			int left = (int)Math.Max(0, this.Left.Pixels);
+			int top = (int)Math.Max(0, this.Top.Pixels);
+			int width = Math.Min(panelWidth, innerSpriteBatch.GraphicsDevice.Viewport.Width - left);
+			int height = Math.Min(panelHeight, innerSpriteBatch.GraphicsDevice.Viewport.Height - top);
+			var rect = new Rectangle(left, top, width, height);
+			innerSpriteBatch.GraphicsDevice.ScissorRectangle = rect;
+
 			//innerSpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, r, null, Matrix.CreateTranslation(0, -Scrollbar.ViewPosition, 0));
 			innerSpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, r, null);
 

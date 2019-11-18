@@ -19,6 +19,8 @@ namespace LansToggleableBuffs.ui
         public static bool visible = false;
         public UIScrollPanel panel;
 
+		public LayoutGrid buffGrid = new LayoutGrid(10);
+
 		LayoutWrapperUIElement panelwrapper;
 
 		Texture2D buttonPlayTexture1;
@@ -31,7 +33,7 @@ namespace LansToggleableBuffs.ui
             
         }
 
-		bool needValidate = false;
+		public bool needValidate = false;
 
 		public void create()
 		{
@@ -48,11 +50,31 @@ namespace LansToggleableBuffs.ui
 
 			panel = new UIScrollPanel(); //initialize the panel
 										   // ignore these extra 0s
-			panel.Left.Set(Main.screenWidth/2-500, 0); //this makes the distance between the left of the screen and the left of the panel 500 pixels (somewhere by the middle)
-			panel.Top.Set(Main.screenHeight/2-300, 0); //this is the distance between the top of the screen and the top of the panel
 			this.Append(panel);
 
 			panelwrapper = new LayoutWrapperUIElement(panel, 0, 0, 0, 0, 10, new LayoutVertical());
+
+			updateSize();
+
+			Main.OnResolutionChanged += delegate (Vector2 newSize)
+			{
+				updateSize();
+			};
+		}
+
+		public void updateSize()
+		{
+			int maxWidth = Main.screenWidth / 2;
+			int columnCount = maxWidth / (32 + 10);
+			maxWidth = columnCount* (32 + 10);
+			panel.panelWidth = maxWidth;
+			panel.panelHeight = Main.screenHeight / 2;
+
+			buffGrid.SetColumnCount(columnCount);
+
+			panel.Left.Set(Main.screenWidth / 2 - panel.panelWidth/2, 0); //this makes the distance between the left of the screen and the left of the panel 500 pixels (somewhere by the middle)
+			panel.Top.Set(Main.screenHeight / 2 - panel.panelHeight/2, 0); //this is the distance between the top of the screen and the top of the panel
+
 
 			Revalidate();
 		}
@@ -74,7 +96,7 @@ namespace LansToggleableBuffs.ui
 				modlabel.TextColor = new Color(232, 181, 16);
 				modbuffpanel.children.Add(new LayoutElementWrapperUIElement(modlabel));
 
-				var modbuffgridpanel = new Layout(0, 0, 0, 0, 10, new LayoutGrid(24));
+				var modbuffgridpanel = new Layout(0, 0, 0, 0, 10, buffGrid);
 				modbuffpanel.children.Add(modbuffgridpanel);
 
 				//populate modbuffgridpanel
@@ -176,9 +198,9 @@ namespace LansToggleableBuffs.ui
 
 			
 		}
+		
 
-
-        public override void Update(GameTime gameTime)
+		public override void Update(GameTime gameTime)
         {
 			if(!created)
 			{
@@ -191,6 +213,8 @@ namespace LansToggleableBuffs.ui
 			{
 				Revalidate();
 			}
+
+			
 
 			/*
 			if (visible)

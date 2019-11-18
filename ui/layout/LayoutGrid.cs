@@ -14,6 +14,12 @@ namespace LansToggleableBuffs.ui.layout
 			this.columns = columns;
 		}
 
+		public void SetColumnCount(int count)
+		{
+
+			this.columns = count;
+		}
+
 		public void Recalculate(Layout layout)
         {
             

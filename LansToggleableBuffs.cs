@@ -8,18 +8,18 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
+using static Terraria.ModLoader.ModContent;
 
 namespace LansToggleableBuffs
 {
 	class LansToggleableBuffs : Mod
 	{
 
-        public static bool DEBUG = false;
-
 
         public static LansToggleableBuffs instance;
         internal ModHotKey ShowUI;
 
+		public List<ModBuffValues> oldSaveModBuffValues;
 
 		public List<ModBuffValues> modBuffValues;
 
@@ -28,7 +28,11 @@ namespace LansToggleableBuffs
             instance = this;
 
 			modBuffValues = new List<ModBuffValues>();
+			oldSaveModBuffValues = new List<ModBuffValues>();
 			modBuffValues.Add(new ModBuffValues("Vanilla", VanilaBuffs.getVanilla()));
+			oldSaveModBuffValues.Add(new ModBuffValues("Vanilla", VanilaBuffs.getVanilla()));
+
+			
 		}
 
         internal Panel somethingUI;
@@ -59,58 +63,98 @@ namespace LansToggleableBuffs
 			base.PostSetupContent();
 
 
-
-			/*Item item = new Item();
-			for (int i = 0; i < ItemID.Count; i++)
 			{
-				item.SetDefaults(i);
+				//ONLY NEEDED BECAUSE IM LAZY AND OLD SAVES WILL BE DESTROYED OTHERWISE
+				var modBuffs = new Dictionary<string, List<BuffValue>>();
 
-				if (item.buffType >= 1)
+				for (int i = 0; i < ItemLoader.ItemCount; i++)
 				{
-					var t = "Item id:" + item.type + " gives buff " + item.buffType + " which is ";
-					Console.WriteLine(t);
-				}
-			}*/
-
-			var modBuffs = new Dictionary<string, List<BuffValue>>();
-
-			for (int i = 0; i < ItemLoader.ItemCount; i++)
-			{
-				var mitem = ItemLoader.GetItem(i);
-
-				
-				if (mitem != null) {
+					var mitem = ItemLoader.GetItem(i);
 
 
-					
-
-					if (mitem.item.buffType >= 1)
+					if (mitem != null)
 					{
-						var buff = BuffLoader.GetBuff(mitem.item.buffType);
-						if (buff != null && !Main.lightPet[mitem.item.buffType] && !Main.vanityPet[mitem.item.buffType] && !Main.debuff[mitem.item.buffType] && !mitem.item.summon)
+
+
+
+
+						if (mitem.item.buffType >= 1)
 						{
-
-
-
-							if (!modBuffs.ContainsKey(mitem.mod.Name))
+							var buff = BuffLoader.GetBuff(mitem.item.buffType);
+							if (buff != null && !Main.lightPet[mitem.item.buffType] && !Main.vanityPet[mitem.item.buffType] && !Main.debuff[mitem.item.buffType] && !mitem.item.summon)
 							{
-								modBuffs.Add(mitem.mod.Name, new List<BuffValue>());
+
+
+
+								if (!modBuffs.ContainsKey(mitem.mod.Name))
+								{
+									modBuffs.Add(mitem.mod.Name, new List<BuffValue>());
+								}
+
+								var bvalue = new BuffValue(false, mitem.item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.mod.Name, new CostValue[] { new ItemCostValue(mitem.item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
+
+								modBuffs[mitem.mod.Name].Add(bvalue);
+
+
 							}
-
-							var bvalue = new BuffValue(false, mitem.item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.mod.Name, new CostValue[] { new ItemCostValue(mitem.item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
-
-							modBuffs[mitem.mod.Name].Add(bvalue);
-							
-							
 						}
 					}
+
 				}
-				
+
+				foreach (var v in modBuffs)
+				{
+					oldSaveModBuffValues.Add(new ModBuffValues(v.Key, v.Value.ToArray()));
+				}
 			}
 
-			foreach(var v in modBuffs)
 			{
-				modBuffValues.Add(new ModBuffValues(v.Key, v.Value.ToArray()));
+
+				var modBuffs = new Dictionary<string, List<BuffValue>>();
+
+				for (int i = 0; i < ItemLoader.ItemCount; i++)
+				{
+					var mitem = ItemLoader.GetItem(i);
+
+
+					if (mitem != null)
+					{
+
+
+
+
+						if (mitem.item.buffType >= 1)
+						{
+							var buff = BuffLoader.GetBuff(mitem.item.buffType);
+							if (buff != null && !Main.lightPet[mitem.item.buffType] && !Main.vanityPet[mitem.item.buffType] && !mitem.item.summon)
+							{
+
+								if (GetInstance<Config>().AllowDebuff || !Main.debuff[mitem.item.buffType])
+								{
+
+
+
+									if (!modBuffs.ContainsKey(mitem.mod.Name))
+									{
+										modBuffs.Add(mitem.mod.Name, new List<BuffValue>());
+									}
+
+									var bvalue = new BuffValue(false, mitem.item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.mod.Name, new CostValue[] { new ItemCostValue(mitem.item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
+
+									modBuffs[mitem.mod.Name].Add(bvalue);
+								}
+
+
+							}
+						}
+					}
+
+				}
+
+				foreach (var v in modBuffs)
+				{
+					modBuffValues.Add(new ModBuffValues(v.Key, v.Value.ToArray()));
+				}
 			}
 
 		}
@@ -148,13 +192,19 @@ namespace LansToggleableBuffs
 
         public override void UpdateUI(GameTime gameTime)
         {
-            // it will only draw if the player is not on the main menu
-            if (!Main.gameMenu
-                && Panel.visible)
-            {
-                somethingInterface?.Update(gameTime);
-            }
-        }
+			// it will only draw if the player is not on the main menu
+			if (!Main.gameMenu
+				&& Panel.visible)
+			{
+				somethingInterface?.Update(gameTime);
+			}
+			else
+			{
+				somethingUI.needValidate = true;
+			}
+			
+
+		}
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {

@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using static Terraria.ModLoader.ModContent;
 
 namespace LansToggleableBuffs
 {
@@ -15,12 +16,12 @@ namespace LansToggleableBuffs
         {
             Main.LocalPlayer.CanBuyItem(cost);
 
-            return LansToggleableBuffs.DEBUG || Main.LocalPlayer.CanBuyItem(cost);
+            return GetInstance<Config>().Debug || Main.LocalPlayer.CanBuyItem(cost);
         }
 
         public void Buy()
         {
-            if (!LansToggleableBuffs.DEBUG)
+            if (!GetInstance<Config>().Debug)
             {
                 Main.LocalPlayer.BuyItem(cost);
             }

@@ -3,6 +3,13 @@
 
 
 # Change log:
+V. 0.2.3:
+
+	- Fixed a issue with the panel not resizing correctly nor staying in the center of the screen
+	- Added config
+	- Added Debuffs for mods
+
+
 V. 0.2.2:
 
 	- Wrapped the UI inside a "badly done" scrollpanel, hopefully this did not fuck everything
