@@ -15,6 +15,9 @@ namespace LansToggleableBuffs
 {
     class LPlayer: ModPlayer
     {
+		// this is used to timeout re-addition of buffs that might be cleared by other buffs.
+		// This is for example done with Calamity cadence and Lifeforce
+		private int[] reAddTimeout;
 
 		public bool[] boughtbuffsavail;
 		public bool[] buffsavail;
@@ -27,6 +30,7 @@ namespace LansToggleableBuffs
 			var size = LansToggleableBuffs.instance.getBuffLength();
 			boughtbuffsavail = new bool[size];
 			buffsavail = new bool[size];
+			reAddTimeout = new int[size];
 		}
 
 		public override void clientClone(ModPlayer clientClone)
@@ -281,7 +285,12 @@ namespace LansToggleableBuffs
             {
                 Panel.visible = !Panel.visible;
             }
-        }
+
+			if (((LansToggleableBuffs)mod).ToggleBuffs.JustPressed)
+			{
+				LansToggleableBuffs.instance.renderBuffs = !LansToggleableBuffs.instance.renderBuffs;
+			}
+		}
 
 
         public override void PreUpdate()
@@ -298,7 +307,17 @@ namespace LansToggleableBuffs
 					{
 						if (!player.HasBuff(buffId))
 						{
-							player.AddBuff(buffId, int.MaxValue);
+							if (mp.reAddTimeout[i] <= 0)
+							{
+
+								//Main.NewText($"Readded buff {buffId}");
+								player.AddBuff(buffId, int.MaxValue);
+								mp.reAddTimeout[i] = 60*10;
+							}
+							else
+							{
+								mp.reAddTimeout[i]--;
+							}
 						}
 					}
 					else
@@ -306,6 +325,7 @@ namespace LansToggleableBuffs
 						if (player.HasBuff(buffId))
 						{
 							player.ClearBuff(buffId);
+							mp.reAddTimeout[i] = 0;
 						}
 					}
 				}

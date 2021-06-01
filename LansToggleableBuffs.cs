@@ -1,9 +1,12 @@
 using LansToggleableBuffs.ui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -18,6 +21,9 @@ namespace LansToggleableBuffs
 
         public static LansToggleableBuffs instance;
         internal ModHotKey ShowUI;
+        internal ModHotKey ToggleBuffs;
+
+		public bool renderBuffs = true;
 
 		public List<ModBuffValues> oldSaveModBuffValues;
 
@@ -54,8 +60,30 @@ namespace LansToggleableBuffs
 
 
 			ShowUI = RegisterHotKey("Show UI", Keys.L.ToString());
+			ToggleBuffs = RegisterHotKey("Toggle buff rendering", Keys.P.ToString());
 
-			
+			IL.Terraria.Main.DrawInterface_Resources_Buffs += ModifyRenderBuffs;
+		}
+
+		public void ModifyRenderBuffs(ILContext iLContext)
+		{
+			InjectSkipOnBoolean(iLContext, ModifyRenderBuffsFunc);
+		}
+
+		// Stolen from my other project...
+		public static void InjectSkipOnBoolean(ILContext il, Func<bool> action)
+		{
+			var c = new ILCursor(il);
+			c.Emit(OpCodes.Call, action.GetMethodInfo());
+			var after = c.DefineLabel();
+			c.Emit(OpCodes.Brfalse_S, after);
+			c.Emit(OpCodes.Ret);
+			c.MarkLabel(after);
+		}
+
+		public static bool ModifyRenderBuffsFunc()
+		{
+			return LansToggleableBuffs.instance.renderBuffs;
 		}
 
 		public override void PostSetupContent()

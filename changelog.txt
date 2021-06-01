@@ -1,3 +1,11 @@
+v. 0.2.4:
+	- Added reset command (for testing)
+	- Added "re-application" delay of 600 ticks (10 seconds) to prevent stacking of (mutually) exclusive buffs.
+	  (Calamity "Cadence" and "Lifeforce" for example)
+	  Note: Not the nicest solution, but the easiest. Might have to revisit this later.
+	- Added "vanilla" environmental buffs.
+	- Added hotkey to remove rendering of buffs.
+
 V. 0.2.3:
 	- Fixed a issue with the panel not resizing correctly nor staying in the center of the screen
 	- Added config
