@@ -1,4 +1,6 @@
 
+v. 0.2.6:
+	- Made "suger rush" obtailable (as cake is not obtainable before 1.4)
 v. 0.2.5:
 	- Changed the "remove rendering of buffs" toggle to only remove "toggleable" buffs.
 v. 0.2.4:

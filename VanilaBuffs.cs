@@ -137,7 +137,7 @@ namespace LansToggleableBuffs
 				new BuffValue(true, BuffID.Sharpened, "Sharpened", "Increases melee weapons armor penetration by 4. ", null, new CostValue[] {new ItemCostValue(ItemID.SharpeningStation , 1) }, delegate(Player player) {
 					player.armorPenetration += 4;
 				}, false),
-				new BuffValue(true, BuffID.SugarRush, "Suger Rush", "Increases the player's movement and mining speed by 20%.", null, new CostValue[] {new ItemCostValue(ItemID.SliceOfCake, 1) }, null, true),
+				new BuffValue(true, BuffID.SugarRush, "Suger Rush", "Increases the player's movement and mining speed by 20%.", null, new CostValue[] {new MoneyCostValue(99*100*100) }, null, true),
 				new BuffValue(true, BuffID.Campfire, "Campfire", "Increases life regeneration by 0.5 HP/s, and multiplies current healing rate by 1.1.", null, new CostValue[] {new ItemCostValue(ItemID.Campfire, 10) }, null, true),
 				new BuffValue(true, BuffID.Sunflower, "Happy!", "Increases movement speed by 10% and reduces enemy spawns by 17%.", null, new CostValue[] {new ItemCostValue(ItemID.Sunflower, 10) }, null, true),
 				new BuffValue(true, BuffID.HeartLamp, "Heart Lantern", "Increases life regeneration by 1 HP/s. ", null, new CostValue[] {new ItemCostValue(ItemID.HeartLantern, 4) }, null, true),
