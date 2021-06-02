@@ -83,6 +83,11 @@ namespace LansToggleableBuffs
 
 		public static bool ModifyRenderBuffsFunc()
 		{
+			if(LansToggleableBuffs.instance.renderBuffs)
+			{
+				RenderBuffs.DrawInterface_Resources_Buffs();
+			}
+
 			return LansToggleableBuffs.instance.renderBuffs;
 		}
 
