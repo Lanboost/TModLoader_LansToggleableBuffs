@@ -1,4 +1,5 @@
-
+v. 0.2.7:
+	- Made "Water Candle" obtailable
 v. 0.2.6:
 	- Made "suger rush" obtailable (as cake is not obtainable before 1.4)
 v. 0.2.5:

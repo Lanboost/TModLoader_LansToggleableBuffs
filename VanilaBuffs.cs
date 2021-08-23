@@ -143,7 +143,8 @@ namespace LansToggleableBuffs
 				new BuffValue(true, BuffID.HeartLamp, "Heart Lantern", "Increases life regeneration by 1 HP/s. ", null, new CostValue[] {new ItemCostValue(ItemID.HeartLantern, 4) }, null, true),
 				new BuffValue(true, BuffID.Honey, "Honey", "Increases life regeneration by 1 HP/s and multiplies natural regeneration by 3.", null, new CostValue[] {new ItemCostValue(ItemID.HoneyBucket, 4) }, null, true),
 				new BuffValue(true, BuffID.PeaceCandle, "Peace Candle", "Decreases enemy spawn rate by 23%, and maximum enemies on-screen by 30%.", null, new CostValue[] {new ItemCostValue(ItemID.PeaceCandle, 4) }, null, true),
-				new BuffValue(true, BuffID.StarInBottle, "Star in a Bottle", "Increases mana regeneration by about 2 MP/s.", null, new CostValue[] {new ItemCostValue(ItemID.StarinaBottle, 10) }, null, true)
+				new BuffValue(true, BuffID.StarInBottle, "Star in a Bottle", "Increases mana regeneration by about 2 MP/s.", null, new CostValue[] {new ItemCostValue(ItemID.StarinaBottle, 10) }, null, true),
+				new BuffValue(true, BuffID.WaterCandle, "Water Candle", "Holding this may attract unwanted attention", null, new CostValue[] {new ItemCostValue(ItemID.WaterCandle, 4) }, null, true)
 			};
 
 			return buffs;

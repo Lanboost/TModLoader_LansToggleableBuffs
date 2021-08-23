@@ -34,9 +34,9 @@ namespace LansToggleableBuffs
 			{
 				Main.LocalPlayer.buffTime[i] = 0;
 			}
-
-
+			
 			Main.NewText("LansToggleableBuffs: Buffs reseted.");
+			Main.NewText($"netmode is:{Main.netMode}");
 		}
 	}
 }
