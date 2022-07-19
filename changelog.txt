@@ -1,3 +1,5 @@
+V. 2022.07.19:
+	- Update to tModLoader 1.4
 v. 0.2.7:
 	- Made "Water Candle" obtailable
 v. 0.2.6:

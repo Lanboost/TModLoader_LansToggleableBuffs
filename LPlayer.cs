@@ -22,7 +22,6 @@ namespace LansToggleableBuffs
 		public bool[] boughtbuffsavail;
 		public bool[] buffsavail;
 
-        public override bool CloneNewInstances => false;
 
 
 		public LPlayer()
@@ -47,9 +46,9 @@ namespace LansToggleableBuffs
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
-            ModPacket packet = mod.GetPacket();
+            ModPacket packet = Mod.GetPacket();
             packet.Write((byte)ModMessageType.SyncPlayer);
-            packet.Write((byte)player.whoAmI);
+            packet.Write((byte)Player.whoAmI);
             for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
             {
                 packet.Write(boughtbuffsavail[i]);
@@ -80,9 +79,9 @@ namespace LansToggleableBuffs
 
             if (send)
             {
-                var packet = mod.GetPacket();
+                var packet = Mod.GetPacket();
                 packet.Write((byte)ModMessageType.Change);
-                packet.Write((byte)player.whoAmI);
+                packet.Write((byte)Player.whoAmI);
                 for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
                 {
                     packet.Write(boughtbuffsavail[i]);
@@ -92,11 +91,10 @@ namespace LansToggleableBuffs
             }
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tagComp)/* tModPorter Suggestion: Edit tag parameter instead of returning new TagCompound */
         {
 			int buffIndex = 0;
 
-			var tagComp = new TagCompound();
 			tagComp.Add("version", 1);
 
 			List<TagCompound> modTags = new List<TagCompound>();
@@ -127,13 +125,9 @@ namespace LansToggleableBuffs
 			}
 
 			tagComp.Add("mods", modTags);
-
-
-
-			return tagComp;
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
 			int buffIndex = 0;
 
@@ -281,12 +275,12 @@ namespace LansToggleableBuffs
 
 
 
-            if (((LansToggleableBuffs)mod).ShowUI.JustPressed)
+            if (((LansToggleableBuffs)Mod).ShowUI.JustPressed)
             {
                 Panel.visible = !Panel.visible;
             }
 
-			if (((LansToggleableBuffs)mod).ToggleBuffs.JustPressed)
+			if (((LansToggleableBuffs)Mod).ToggleBuffs.JustPressed)
 			{
 				LansToggleableBuffs.instance.renderBuffs = !LansToggleableBuffs.instance.renderBuffs;
 			}
@@ -296,7 +290,7 @@ namespace LansToggleableBuffs
         public override void PreUpdate()
         {
 
-			var mp = player.GetModPlayer<LPlayer>();
+			var mp = Player.GetModPlayer<LPlayer>();
 		
 			for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
 			{
@@ -305,13 +299,13 @@ namespace LansToggleableBuffs
 				{
 					if (mp.buffsavail[i])
 					{
-						if (!player.HasBuff(buffId))
+						if (!Player.HasBuff(buffId))
 						{
 							if (mp.reAddTimeout[i] <= 0)
 							{
 
 								//Main.NewText($"Readded buff {buffId}");
-								player.AddBuff(buffId, int.MaxValue);
+								Player.AddBuff(buffId, int.MaxValue);
 								mp.reAddTimeout[i] = 60*10;
 							}
 							else
@@ -322,9 +316,9 @@ namespace LansToggleableBuffs
 					}
 					else
 					{
-						if (player.HasBuff(buffId))
+						if (Player.HasBuff(buffId))
 						{
-							player.ClearBuff(buffId);
+							Player.ClearBuff(buffId);
 							mp.reAddTimeout[i] = 0;
 						}
 					}

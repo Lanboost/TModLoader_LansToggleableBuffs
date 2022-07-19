@@ -1,6 +1,7 @@
 ﻿using LansToggleableBuffs.ui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -22,9 +23,9 @@ namespace ExampleMod.UI
 
         public event CheckEvent OnChecked;
 
-        Texture2D texture_checked;
-        Texture2D texture_unchecked;
-        public UIHoverImageToggleButton(Texture2D texture_checked, Texture2D texture_unchecked, string hoverTextchecked, string hoverTextunchecked) : base(texture_unchecked)
+        Asset<Texture2D> texture_checked;
+        Asset<Texture2D> texture_unchecked;
+        public UIHoverImageToggleButton(Asset<Texture2D> texture_checked, Asset<Texture2D> texture_unchecked, string hoverTextchecked, string hoverTextunchecked) : base(texture_unchecked)
         {
             HoverTextChecked = hoverTextchecked;
             HoverTextUnchecked = hoverTextunchecked;

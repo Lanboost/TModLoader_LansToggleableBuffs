@@ -63,7 +63,7 @@ namespace LansToggleableBuffs
 				}, false),
 				new BuffValue(true, BuffID.Lifeforce, "Lifeforce", "Increases max health by 20%. ", null, new CostValue[] {new ItemCostValue(ItemID.LifeforcePotion , 30) }, null, true),
 				new BuffValue(true, BuffID.MagicPower, "MagicPower", "Increases Magic damage by 20%. ", null, new CostValue[] {new ItemCostValue(ItemID.MagicPowerPotion , 30) }, delegate(Player player) {
-					player.magicDamage += 0.2f;
+					player.GetDamage(DamageClass.Magic) += 0.2f;
 				}, false),
 				new BuffValue(true, BuffID.ManaRegeneration, "ManaRegeneration", "Increases Mana regeneration. ", null, new CostValue[] {new ItemCostValue(ItemID.ManaRegenerationPotion , 30) }, delegate(Player player) {
 					player.manaRegenBuff = true;
@@ -107,8 +107,8 @@ namespace LansToggleableBuffs
 				}, false),
 				new BuffValue(true, BuffID.Tipsy, "Tipsy", "Inflicts -4 defense, grants +2% critical hit on melee attacks, +10% melee attack speed and damage.", null, new CostValue[] {new MoneyCostValue(50*100*100) }, delegate(Player player) {
 					player.statDefense -= 4;
-					player.meleeCrit += 2;
-					player.meleeSpeed += 0.1f;
+					player.GetCritChance(DamageClass.Melee) += 2;
+					player.GetAttackSpeed(DamageClass.Melee) += 0.1f;
 				}, false),
 
 
@@ -130,12 +130,12 @@ namespace LansToggleableBuffs
 				}, false),
 				new BuffValue(true, BuffID.Clairvoyance, "Clairvoyance", "Grants the following magic boosts: +20 maximum Mana, +5% Magic damage, +2% Magic critical strike chance, -2% Mana usage. ", null, new CostValue[] {new ItemCostValue(ItemID.CrystalBall , 1) }, delegate(Player player) {
 					player.statManaMax2 += 20;
-					player.magicDamageMult += 0.05f;
-					player.magicCrit += 2;
+					player.GetDamage(DamageClass.Magic) += 0.05f;
+					player.GetCritChance(DamageClass.Magic) += 2;
 					player.manaCost -= 0.02f;
 				}, false),
 				new BuffValue(true, BuffID.Sharpened, "Sharpened", "Increases melee weapons armor penetration by 4. ", null, new CostValue[] {new ItemCostValue(ItemID.SharpeningStation , 1) }, delegate(Player player) {
-					player.armorPenetration += 4;
+					player.GetArmorPenetration(DamageClass.Melee) += 4;
 				}, false),
 				new BuffValue(true, BuffID.SugarRush, "Suger Rush", "Increases the player's movement and mining speed by 20%.", null, new CostValue[] {new MoneyCostValue(99*100*100) }, null, true),
 				new BuffValue(true, BuffID.Campfire, "Campfire", "Increases life regeneration by 0.5 HP/s, and multiplies current healing rate by 1.1.", null, new CostValue[] {new ItemCostValue(ItemID.Campfire, 10) }, null, true),

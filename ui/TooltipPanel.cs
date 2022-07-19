@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -63,7 +64,7 @@ namespace LansToggleableBuffs.ui
 
                 var ll = new Layout(0, 0, 0, 0, 10, new LayoutHorizontal());
 
-                buffIcon = new UIImage(ModContent.GetTexture("LansToggleableBuffs/ui/unowned"));
+                buffIcon = new UIImage(ModContent.Request<Texture2D>("LansToggleableBuffs/ui/unowned"));
                 ll.children.Add(new LayoutElementWrapperUIElement(buffIcon));
 
                 buffName = new UIText("TestName");
@@ -141,7 +142,7 @@ namespace LansToggleableBuffs.ui
                 if(v.GetType() == typeof(ItemCostValue))
                 {
                     var ll = new Layout(0, 0, 0, 0, 10, new LayoutHorizontal());
-                    var costIcon = new UIImage(Main.itemTexture[((ItemCostValue) v).itemid]);
+                    var costIcon = new UIImage(TextureAssets.Item[((ItemCostValue) v).itemid].Value);
                     costIcon.Height.Set(20, 0);
                     ll.children.Add(new LayoutElementWrapperUIElement(costIcon));
 
@@ -165,7 +166,7 @@ namespace LansToggleableBuffs.ui
                         money = (money % ((int)Math.Pow(100, i - 1)));
                         if (mcount > 0)
                         {
-                            var costIcon = new UIImage(Main.itemTexture[70 + i]);
+                            var costIcon = new UIImage(TextureAssets.Item[70 + i].Value);
                             costIcon.Height.Set(20, 0);
                             ll.children.Add(new LayoutElementWrapperUIElement(costIcon));
 

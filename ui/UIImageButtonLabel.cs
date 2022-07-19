@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace LansToggleableBuffs.ui
 
         //internal string HoverLabel;
 
-        public UIImageButtonLabel(Texture2D texture_checked, string HoverLabel) : base(texture_checked)
+        public UIImageButtonLabel(Asset<Texture2D> texture_checked, string HoverLabel) : base(texture_checked)
         {
         }
 

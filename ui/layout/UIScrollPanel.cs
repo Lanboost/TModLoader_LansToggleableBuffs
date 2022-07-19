@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.Graphics;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LansToggleableBuffs.ui.layout
@@ -30,8 +32,8 @@ namespace LansToggleableBuffs.ui.layout
 		private static int CORNER_SIZE = 12;
 		private static int BAR_SIZE = 4;
 
-		private static Texture2D _borderTexture;
-		private static Texture2D _backgroundTexture;
+		private static Asset<Texture2D> _borderTexture;
+		private static Asset<Texture2D> _backgroundTexture;
 		public Color BorderColor = Color.Black;
 		public Color BackgroundColor = new Color(63, 82, 151) * 0.7f;
 
@@ -59,11 +61,11 @@ namespace LansToggleableBuffs.ui.layout
 			// moved from constructor to avoid texture loading on JIT thread
 			if (_borderTexture == null)
 			{
-				_borderTexture = TextureManager.Load("Images/UI/PanelBorder");
+				_borderTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/PanelBorder");
 			}
 			if (_backgroundTexture == null)
 			{
-				_backgroundTexture = TextureManager.Load("Images/UI/PanelBackground");
+				_backgroundTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/PanelBackground");
 			}
 
 
@@ -71,8 +73,14 @@ namespace LansToggleableBuffs.ui.layout
 
 			panelSpriteBatch.Begin();
 
-			this.DrawPanel(panelSpriteBatch, _backgroundTexture, BackgroundColor);
-			this.DrawPanel(panelSpriteBatch, _borderTexture, BorderColor);
+			if (_backgroundTexture.Value != null)
+			{
+				this.DrawPanel(panelSpriteBatch, _backgroundTexture.Value, BackgroundColor);
+			}
+			if (_borderTexture.Value != null)
+			{
+				this.DrawPanel(panelSpriteBatch, _borderTexture.Value, BorderColor);
+			}
 
 			CalculatedStyle space = GetInnerDimensions();
 			float position = 0f;

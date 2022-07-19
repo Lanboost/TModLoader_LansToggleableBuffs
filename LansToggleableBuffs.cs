@@ -20,8 +20,8 @@ namespace LansToggleableBuffs
 
 
         public static LansToggleableBuffs instance;
-        internal ModHotKey ShowUI;
-        internal ModHotKey ToggleBuffs;
+        internal ModKeybind ShowUI;
+        internal ModKeybind ToggleBuffs;
 
 		public bool renderBuffs = true;
 
@@ -41,26 +41,13 @@ namespace LansToggleableBuffs
 			
 		}
 
-        internal Panel somethingUI;
-        internal TooltipPanel tooltipPanel;
-        public UserInterface somethingInterface;
-        public UserInterface tooltipInterface;
-
         public override void Load()
         {
-			// this makes sure that the UI doesn't get opened on the server
-			// the server can't see UI, can it? it's just a command prompt
-			if (!Main.dedServ)
-			{
-				somethingUI = new Panel();
-				somethingUI.Initialize();
-				somethingInterface = new UserInterface();
-				somethingInterface.SetState(somethingUI);
-			}
+			
 
 
-			ShowUI = RegisterHotKey("Show UI", Keys.L.ToString());
-			ToggleBuffs = RegisterHotKey("Toggle buff rendering", Keys.P.ToString());
+			ShowUI = KeybindLoader.RegisterKeybind(this, "Show UI", Keys.L.ToString());
+			ToggleBuffs = KeybindLoader.RegisterKeybind(this, "Toggle buff rendering", Keys.P.ToString());
 
 			IL.Terraria.Main.DrawInterface_Resources_Buffs += ModifyRenderBuffs;
 		}
@@ -111,22 +98,22 @@ namespace LansToggleableBuffs
 
 
 
-						if (mitem.item.buffType >= 1)
+						if (mitem.Item.buffType >= 1)
 						{
-							var buff = BuffLoader.GetBuff(mitem.item.buffType);
-							if (buff != null && !Main.lightPet[mitem.item.buffType] && !Main.vanityPet[mitem.item.buffType] && !Main.debuff[mitem.item.buffType] && !mitem.item.summon)
+							var buff = BuffLoader.GetBuff(mitem.Item.buffType);
+							if (buff != null && !Main.lightPet[mitem.Item.buffType] && !Main.vanityPet[mitem.Item.buffType] && !Main.debuff[mitem.Item.buffType] && !mitem.Item.CountsAsClass(DamageClass.Summon))
 							{
 
 
 
-								if (!modBuffs.ContainsKey(mitem.mod.Name))
+								if (!modBuffs.ContainsKey(mitem.Mod.Name))
 								{
-									modBuffs.Add(mitem.mod.Name, new List<BuffValue>());
+									modBuffs.Add(mitem.Mod.Name, new List<BuffValue>());
 								}
 
-								var bvalue = new BuffValue(false, mitem.item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.mod.Name, new CostValue[] { new ItemCostValue(mitem.item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
+								var bvalue = new BuffValue(false, mitem.Item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.Mod.Name, new CostValue[] { new ItemCostValue(mitem.Item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
 
-								modBuffs[mitem.mod.Name].Add(bvalue);
+								modBuffs[mitem.Mod.Name].Add(bvalue);
 
 
 							}
@@ -156,25 +143,25 @@ namespace LansToggleableBuffs
 
 
 
-						if (mitem.item.buffType >= 1)
+						if (mitem.Item.buffType >= 1)
 						{
-							var buff = BuffLoader.GetBuff(mitem.item.buffType);
-							if (buff != null && !Main.lightPet[mitem.item.buffType] && !Main.vanityPet[mitem.item.buffType] && !mitem.item.summon)
+							var buff = BuffLoader.GetBuff(mitem.Item.buffType);
+							if (buff != null && !Main.lightPet[mitem.Item.buffType] && !Main.vanityPet[mitem.Item.buffType] && !mitem.Item.CountsAsClass(DamageClass.Summon))
 							{
 
-								if (GetInstance<Config>().AllowDebuff || !Main.debuff[mitem.item.buffType])
+								if (GetInstance<Config>().AllowDebuff || !Main.debuff[mitem.Item.buffType])
 								{
 
 
 
-									if (!modBuffs.ContainsKey(mitem.mod.Name))
+									if (!modBuffs.ContainsKey(mitem.Mod.Name))
 									{
-										modBuffs.Add(mitem.mod.Name, new List<BuffValue>());
+										modBuffs.Add(mitem.Mod.Name, new List<BuffValue>());
 									}
 
-									var bvalue = new BuffValue(false, mitem.item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.mod.Name, new CostValue[] { new ItemCostValue(mitem.item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
+									var bvalue = new BuffValue(false, mitem.Item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.Mod.Name, new CostValue[] { new ItemCostValue(mitem.Item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
 
-									modBuffs[mitem.mod.Name].Add(bvalue);
+									modBuffs[mitem.Mod.Name].Add(bvalue);
 								}
 
 
@@ -223,44 +210,6 @@ namespace LansToggleableBuffs
             instance = null;
         }
 
-        public override void UpdateUI(GameTime gameTime)
-        {
-			// it will only draw if the player is not on the main menu
-			if (!Main.gameMenu
-				&& Panel.visible)
-			{
-				somethingInterface?.Update(gameTime);
-			}
-			else
-			{
-				somethingUI.needValidate = true;
-			}
-			
-
-		}
-
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
-        {
-            int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-            if (mouseTextIndex != -1)
-            {
-                layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer("LansToggleableBuffs", DrawSomethingUI, InterfaceScaleType.UI));
-            }
-        }
-
-        private bool DrawSomethingUI()
-        {
-            // it will only draw if the player is not on the main menu
-            if (!Main.gameMenu
-                && Panel.visible)
-            {
-                somethingInterface.Draw(Main.spriteBatch, new GameTime());
-            }
-            return true;
-        }
-
-
-
 
 		// Messages:
 		// string:"AddModBuffs" - string:Save/load Tag - BuffValue[]:buffValues
@@ -280,12 +229,12 @@ namespace LansToggleableBuffs
 				}
 				else
 				{
-					ErrorLogger.Log("LansToggleableBuffs Call Error: Unknown Message: " + message);
+					this.Logger.Warn($"LansToggleableBuffs Call Error: Unknown Message: {message}");
 				}
 			}
 			catch (Exception e)
 			{
-				ErrorLogger.Log("LansToggleableBuffs Call Error: " + e.StackTrace + e.Message);
+                this.Logger.Warn($"LansToggleableBuffs Call Error: {e.StackTrace} {e.Message}");
 			}
 			return "Failure";
 		}

@@ -2,12 +2,14 @@
 using LansToggleableBuffs.ui.layout;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -23,8 +25,8 @@ namespace LansToggleableBuffs.ui
 
 		LayoutWrapperUIElement panelwrapper;
 
-		Texture2D buttonPlayTexture1;
-        Texture2D buttonPlayTexture2;
+        Asset<Texture2D> buttonPlayTexture1;
+        Asset<Texture2D> buttonPlayTexture2;
 
 		bool created = false;
         public override void OnInitialize()
@@ -45,8 +47,8 @@ namespace LansToggleableBuffs.ui
 			// if you set this to true, it will show up in game
 			//visible = false;
 
-			buttonPlayTexture1 = ModContent.GetTexture("LansToggleableBuffs/ui/checkbox");
-			buttonPlayTexture2 = ModContent.GetTexture("LansToggleableBuffs/ui/checkboxunchecked");
+			buttonPlayTexture1 = ModContent.Request<Texture2D>("LansToggleableBuffs/ui/checkbox");
+			buttonPlayTexture2 = ModContent.Request<Texture2D>("LansToggleableBuffs/ui/checkboxunchecked");
 
 			panel = new UIScrollPanel(); //initialize the panel
 										   // ignore these extra 0s
@@ -83,7 +85,7 @@ namespace LansToggleableBuffs.ui
 			needValidate = false;
 			var buffSize = LansToggleableBuffs.instance.getBuffLength();
 			
-			var unownedTexture = ModContent.GetTexture("LansToggleableBuffs/ui/unowned");
+			var unownedTexture = ModContent.Request<Texture2D>("LansToggleableBuffs/ui/unowned");
 			var mp = Main.player[Main.myPlayer].GetModPlayer<LPlayer>();
 			panelwrapper.children.Clear();
 
@@ -110,7 +112,7 @@ namespace LansToggleableBuffs.ui
 
 					var buff = LansToggleableBuffs.instance.getBuff(currentBuffIndex);
 
-					buff.texture = Main.buffTexture[buff.id];
+					buff.texture = TextureAssets.Buff[buff.id].Value;
 
 					{
 						UIImage icon = new UIImage(buff.texture);

@@ -10,10 +10,6 @@ namespace LansToggleableBuffs
 {
 	class ActionCommands : ModCommand
 	{
-		public override bool Autoload(ref string name)
-		{
-			return true;
-		}
 
 		public override string Description => "Resets all unlocked buffs for this character";
 
@@ -29,7 +25,7 @@ namespace LansToggleableBuffs
 				Main.LocalPlayer.GetModPlayer<LPlayer>().boughtbuffsavail[i] = false;
 			}
 
-			LansToggleableBuffs.instance.somethingUI.needValidate = true;
+            MainUI.instance.somethingUI.needValidate = true;
 			for (int i = 0; i < Main.LocalPlayer.buffTime.Length; i++)
 			{
 				Main.LocalPlayer.buffTime[i] = 0;

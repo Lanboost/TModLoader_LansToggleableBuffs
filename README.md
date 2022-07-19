@@ -3,6 +3,9 @@
 
 
 # Change log:
+V. 2022.07.19:
+	- Update to tModLoader 1.4
+
 V. 0.2.3:
 
 	- Fixed a issue with the panel not resizing correctly nor staying in the center of the screen
