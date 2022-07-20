@@ -30,10 +30,6 @@ namespace LansToggleableBuffs.ui
                 TooltipPanel.Instance.Show(this);
                 TooltipPanel.Instance.X = Main.mouseX;
                 TooltipPanel.Instance.Y = Main.mouseY;
-
-
-
-
             }
             else
             {

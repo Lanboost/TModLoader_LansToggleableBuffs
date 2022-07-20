@@ -12,12 +12,30 @@ namespace ExampleMod.UI
     // Inheriting is a great tool for UI design. 
     // By inheriting, we get the Image drawing, MouseOver sound, and fading for free from UIImageButton
     // We've added some code to allow the Button to show a text tooltip while hovered. 
-    internal class UIHoverImageToggleButton : UIImageButton
+    public class UIHoverImageToggleButton : UIImageButton
     {
         internal string HoverTextChecked;
         internal string HoverTextUnchecked;
 
-        public bool IsChecked = false;
+        bool _IsChecked = false;
+
+        public bool IsChecked
+        {
+            get { return _IsChecked; }
+            set
+            {
+                _IsChecked = value;
+                if (_IsChecked)
+                {
+                    base.SetImage(texture_checked);
+                }
+                else
+                {
+                    base.SetImage(texture_unchecked);
+                }
+
+            }
+        }
 
         public delegate void CheckEvent(bool val);
 
@@ -69,15 +87,6 @@ namespace ExampleMod.UI
         private void PlayButtonClicked(UIMouseEvent evt, UIElement listeningElement)
         {
             this.IsChecked = !IsChecked;
-
-            if (IsChecked)
-            {
-                base.SetImage(texture_checked);
-            }
-            else
-            {
-                base.SetImage(texture_unchecked);
-            }
 
             OnChecked?.Invoke(this.IsChecked);
         }

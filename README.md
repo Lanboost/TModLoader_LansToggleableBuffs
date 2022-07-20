@@ -3,8 +3,9 @@
 
 
 # Change log:
-V. 2022.07.19:
+V. 2022.07.20:
 	- Update to tModLoader 1.4
+		- Might be broken AF, use at your own risk!
 
 V. 0.2.3:
 

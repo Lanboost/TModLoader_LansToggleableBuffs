@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 
 namespace LansToggleableBuffs
@@ -16,9 +17,9 @@ namespace LansToggleableBuffs
         public BuffFunction func;
         public bool useMainBuff;
         public string effect;
-		public Texture2D texture;
+		public Asset<Texture2D> texture;
 
-        public BuffValue(bool isMainGame, int id, string name, string effect, string mod, CostValue[] cost, BuffFunction func, bool useMainBuff, Texture2D texture = null)
+        public BuffValue(bool isMainGame, int id, string name, string effect, string mod, CostValue[] cost, BuffFunction func, bool useMainBuff, Asset<Texture2D> texture = null)
         {
             IsMainGame = isMainGame;
             this.id = id;

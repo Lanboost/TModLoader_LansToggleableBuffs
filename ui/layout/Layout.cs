@@ -1,283 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LansToggleableBuffs.ui.components;
 using Terraria.UI;
 
 namespace LansToggleableBuffs.ui.layout
 {
 
-    class LayoutElement
+    public interface ILayout
     {
-
-        public int x;
-        public int y;
-
-        public virtual int GetHeight()
+        public static ILayout None()
         {
-            return 0;
-        }
-        public virtual int GetWidth()
-        {
-            return 0;
+            return new LayoutDefault();
         }
 
-        public virtual void SetX(int v)
-        {
-            this.x = v;
-        }
+        bool ControlsChildren();
 
-        public virtual void SetY(int v)
-        {
-            this.y = v;
-        }
+        void Calculate();
 
-        public virtual void Recalculate()
+        void SetComponentOwner(LComponent component);
+
+        public static void CalculateDefaultSize(LComponent component)
         {
+            var x = component.Parent.X + component.Parent.Width * component.GetAnchor(LComponent.MinX) + component.GetMargin(LComponent.MinX);
+            var y = component.Parent.Y + component.Parent.Height * component.GetAnchor(LComponent.MinY) + component.GetMargin(LComponent.MinY);
+            var maxX = component.Parent.X + component.Parent.Width * component.GetAnchor(LComponent.MaxX) - component.GetMargin(LComponent.MaxX);
+            var maxY = component.Parent.Y + component.Parent.Height * component.GetAnchor(LComponent.MaxY) - component.GetMargin(LComponent.MaxY);
+
+            var width = Math.Max(0, maxX - x);
+            var height = Math.Max(0, maxY - y);
+
+            component.X = (int)x;
+            component.Y = (int)y;
+            component.Width = (int)width;
+            component.Height = (int)height;
         }
     }
 
-    class LayoutElementWrapperUIElement: LayoutElement
+    public class LayoutDefault: ILayout
     {
-        UIElement elem;
-
-        public LayoutElementWrapperUIElement(UIElement elem)
+        LComponent component;
+        public void SetComponentOwner(LComponent component)
         {
-            this.elem = elem;
-
-            elem.PaddingBottom = 0;
-            elem.PaddingLeft = 0;
-            elem.PaddingRight = 0;
-            elem.PaddingTop = 0;
-
-            elem.MarginBottom = 0;
-            elem.MarginLeft = 0;
-            elem.MarginRight = 0;
-            elem.MarginTop = 0;
-
+            this.component = component;
         }
 
-        public override int GetHeight()
+        public void Calculate()
         {
-            elem.Recalculate();
-            return (int) Math.Max(elem.GetDimensions().Height, elem.Height.Pixels);
-        }
-        public override int GetWidth()
-        {
-            elem.Recalculate();
-            return (int)Math.Max(elem.GetDimensions().Width, elem.Width.Pixels);
+            ILayout.CalculateDefaultSize(component);
         }
 
-        public override void SetX(int v)
+        public bool ControlsChildren()
         {
-            elem.Left.Set(v, 0);
-            this.x = v;
-        }
-
-        public override void SetY(int v)
-        {
-            elem.Top.Set(v, 0);
-            this.y = v;
-        }
-
-        public void Remove()
-        {
-            elem.Remove();
-        }
-
-        public void Add(UIElement e)
-        {
-            e.Append(this.elem);
+            return false;
         }
     }
 
-    class RemoveValue
-    {
-        public bool ToRemove = false;
-
-        public RemoveValue(bool toRemove)
-        {
-            ToRemove = toRemove;
-        }
-    }
-
-    class LayoutWrapperUIElement: Layout
-    {
-
-        public LayoutWrapperUIElement(UIElement elem, int paddingTop, int paddingBottom, int paddingLeft, int paddingRight, int spaceing, ILayoutType layoutType):base(paddingTop, paddingBottom, paddingLeft, paddingRight, spaceing, layoutType)
-        {
-            this.elem = elem;
-            elem.PaddingBottom = 0;
-            elem.PaddingLeft = 0;
-            elem.PaddingRight = 0;
-            elem.PaddingTop = 0;
-
-            elem.MarginBottom = 0;
-            elem.MarginLeft = 0;
-            elem.MarginRight = 0;
-            elem.MarginTop = 0;
-        }
-
-        UIElement elem;
-
-        Dictionary<LayoutElementWrapperUIElement, RemoveValue> childrenAdded = new Dictionary<LayoutElementWrapperUIElement, RemoveValue>();
-
-       
-
-        protected void checkchildren(Layout l)
-        {
-            foreach(var c in l.children)
-            {
-                if(c.GetType() == typeof(Layout))
-                {
-                    checkchildren((Layout)c);
-                }
-
-                if (c.GetType() == typeof(LayoutElementWrapperUIElement))
-                {
-                    LayoutElementWrapperUIElement e = (LayoutElementWrapperUIElement)c;
-                    if (childrenAdded.ContainsKey(e))
-                    {
-                        childrenAdded[e].ToRemove = true;
-                    }
-                    else
-                    {
-                        childrenAdded.Add(e, new RemoveValue(true));
-                        e.Add(elem);
-                    }
-                }
-            }
-        }
-
-        public override void Recalculate()
-        {
-            foreach(var c in childrenAdded.Keys)
-            {
-                childrenAdded[c].ToRemove = false;
-            }
-            checkchildren(this);
-            List<LayoutElementWrapperUIElement> toremove = new List<LayoutElementWrapperUIElement>();
-            foreach (var c in childrenAdded)
-            {
-                if(!childrenAdded[c.Key].ToRemove)
-                {
-                    toremove.Add(c.Key);
-                }
-            }
-
-            foreach(var k in toremove)
-            {
-                k.Remove();
-                childrenAdded.Remove(k);
-            }
-
-
-
-
-            base.Recalculate();
-
-
-			if (elem.GetType() == typeof(UIScrollPanel))
-			{
-				foreach (var c in children)
-				{
-					c.SetY(c.y + ((UIScrollPanel)elem).getOffset());
-					c.Recalculate();
-				}
-			}
-
-
-            elem.Height.Set(this.height,0);
-            elem.Width.Set(this.width, 0);
-			elem.Recalculate();
-
-		}
-    }
-
-    interface ILayoutType
-    {
-        void Recalculate(Layout layout);
-    }
-
-    class Layout : LayoutElement
-    {
-        public int PaddingTop { get; set; }
-        public int PaddingBottom { get; set; }
-        public int PaddingLeft { get; set; }
-        public int PaddingRight { get; set; }
-
-        public int Spaceing { get; set; }
-        
-
-        public List<LayoutElement> children = new List<LayoutElement>();
-
-        protected int width;
-        protected int height;
-
-        
-
-        public ILayoutType LayoutType {get;set;}
-
-        /*public Layout(UIElement panel)
-        {
-            this.panel = panel;
-        }*/
-
-        public Layout(int paddingTop, int paddingBottom, int paddingLeft, int paddingRight, int spaceing, ILayoutType layoutType)
-        {
-            PaddingTop = paddingTop;
-            PaddingBottom = paddingBottom;
-            PaddingLeft = paddingLeft;
-            PaddingRight = paddingRight;
-            Spaceing = spaceing;
-            LayoutType = layoutType;
-        }
-
-
-
-        protected virtual void RecalculateSize()
-        {
-            int width = 0;
-            foreach (var c in children)
-            {
-                width = (int)Math.Max(width,
-                    c.GetWidth()+c.x
-                );
-            }
-            width += PaddingLeft + PaddingRight-this.x;
-            this.width = width;
-
-            int height = 0;
-            foreach (var c in children)
-            {
-                height = Math.Max(height, c.GetHeight()+c.y);
-            }
-            height += PaddingTop;
-            height += PaddingBottom;
-
-            this.height = height - this.y;
-            
-        }
-
-        public override void Recalculate()
-        {
-            LayoutType.Recalculate(this);
-
-
-            
-            RecalculateSize();
-        }
-
-        public override int GetHeight()
-        {
-            return height;
-        }
-        public override int GetWidth()
-        {
-            return width;
-        }
-
-
-    }
 }

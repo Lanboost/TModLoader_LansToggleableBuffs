@@ -2,6 +2,9 @@ Purchaseable permenant toggleable buffs, no more potion farming and afraid of dy
 
 
 Changelog:
+V. 2022.07.20:
+	- Update to tModLoader 1.4
+		- Might be broken AF, use at your own risk!
 
 V. 0.2.3:
 	- Fixed a issue with the panel not resizing correctly nor staying in the center of the screen

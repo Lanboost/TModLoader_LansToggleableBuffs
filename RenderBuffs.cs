@@ -12,18 +12,11 @@ namespace LansToggleableBuffs
 {
 	class RenderBuffs
 	{
-		static MethodInfo DrawBuffIconBinding = typeof(Main).GetMethod("DrawBuffIcon",
-				BindingFlags.NonPublic | BindingFlags.Static);
 
-		static int DrawBuffIcon(int drawBuffText, int i, int b, int x, int y)
+		static int DrawBuffIcon(int drawBuffText, int i, int x, int y)
 		{
-			if(DrawBuffIconBinding == null)
-			{
-				DrawBuffIconBinding = typeof(Main).GetMethod("DrawBuffIcon",
-				BindingFlags.NonPublic | BindingFlags.Static);
-			}
-
-			return (int)DrawBuffIconBinding.Invoke(null, new object[] { drawBuffText, i, b, x, y });
+			return Main.DrawBuffIcon(drawBuffText, i, x, y);
+			
 		}
 
 
@@ -75,7 +68,7 @@ namespace LansToggleableBuffs
 							num3 += 50 * (offsetCount / 11);
 						}
 
-						num = DrawBuffIcon(num, i, b, x, num3);
+						num = DrawBuffIcon(num, i, x, num3);
 
 						offsetCount++;
 					}
