@@ -1,3 +1,10 @@
+V. 2022.08.29:
+	- Fix issue with need full mod reload when changing if allowing debuff
+	- Fix issue with chaning cost of potions not being reflected in the ui or in the buy option.
+	- Fix issue with chaning cost of items not being reflected in the ui or in the buy option.
+
+	- Removed very old code for loading old save files.
+
 V. 2022.07.20:
 	- Update to tModLoader 1.4
 		- Might be broken AF, use at your own risk!

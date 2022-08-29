@@ -18,8 +18,9 @@ namespace LansToggleableBuffs
         public bool useMainBuff;
         public string effect;
 		public Asset<Texture2D> texture;
+        public bool isDebuff = false;
 
-        public BuffValue(bool isMainGame, int id, string name, string effect, string mod, CostValue[] cost, BuffFunction func, bool useMainBuff, Asset<Texture2D> texture = null)
+        public BuffValue(bool isMainGame, int id, string name, string effect, string mod, CostValue[] cost, BuffFunction func, bool useMainBuff, bool isDebuff, Asset<Texture2D> texture = null)
         {
             IsMainGame = isMainGame;
             this.id = id;
@@ -30,8 +31,7 @@ namespace LansToggleableBuffs
             this.useMainBuff = useMainBuff;
             this.effect = effect;
 			this.texture = texture;
-
-			
+            this.isDebuff = isDebuff;
         }
     }
 }

@@ -15,7 +15,8 @@ using static Terraria.ModLoader.ModContent;
 
 namespace LansToggleableBuffs
 {
-	class LansToggleableBuffs : Mod
+
+        class LansToggleableBuffs : Mod
 	{
 
 
@@ -25,27 +26,17 @@ namespace LansToggleableBuffs
 
 		public bool renderBuffs = true;
 
-		public List<ModBuffValues> oldSaveModBuffValues;
-
 		public List<ModBuffValues> modBuffValues;
 
         public LansToggleableBuffs()
 		{
             instance = this;
-
 			modBuffValues = new List<ModBuffValues>();
-			oldSaveModBuffValues = new List<ModBuffValues>();
 			modBuffValues.Add(new ModBuffValues("Vanilla", VanilaBuffs.getVanilla()));
-			oldSaveModBuffValues.Add(new ModBuffValues("Vanilla", VanilaBuffs.getVanilla()));
-
-			
 		}
 
         public override void Load()
         {
-			
-
-
 			ShowUI = KeybindLoader.RegisterKeybind(this, "Show UI", Keys.L.ToString());
 			ToggleBuffs = KeybindLoader.RegisterKeybind(this, "Toggle buff rendering", Keys.P.ToString());
 
@@ -68,7 +59,7 @@ namespace LansToggleableBuffs
 			c.MarkLabel(after);
 		}
 
-		public static bool ModifyRenderBuffsFunc()
+        public static bool ModifyRenderBuffsFunc()
 		{
 			if(LansToggleableBuffs.instance.renderBuffs)
 			{
@@ -81,94 +72,42 @@ namespace LansToggleableBuffs
 		public override void PostSetupContent()
 		{
 			base.PostSetupContent();
-
-
 			{
-				//ONLY NEEDED BECAUSE IM LAZY AND OLD SAVES WILL BE DESTROYED OTHERWISE
 				var modBuffs = new Dictionary<string, List<BuffValue>>();
 
 				for (int i = 0; i < ItemLoader.ItemCount; i++)
 				{
 					var mitem = ItemLoader.GetItem(i);
-
-
 					if (mitem != null)
 					{
-
-
-
-
-						if (mitem.Item.buffType >= 1)
-						{
-							var buff = BuffLoader.GetBuff(mitem.Item.buffType);
-							if (buff != null && !Main.lightPet[mitem.Item.buffType] && !Main.vanityPet[mitem.Item.buffType] && !Main.debuff[mitem.Item.buffType] && !mitem.Item.CountsAsClass(DamageClass.Summon))
-							{
-
-
-
-								if (!modBuffs.ContainsKey(mitem.Mod.Name))
-								{
-									modBuffs.Add(mitem.Mod.Name, new List<BuffValue>());
-								}
-
-								var bvalue = new BuffValue(false, mitem.Item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.Mod.Name, new CostValue[] { new ItemCostValue(mitem.Item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
-
-								modBuffs[mitem.Mod.Name].Add(bvalue);
-
-
-							}
-						}
-					}
-
-				}
-
-				foreach (var v in modBuffs)
-				{
-					oldSaveModBuffValues.Add(new ModBuffValues(v.Key, v.Value.ToArray()));
-				}
-			}
-
-			{
-
-				var modBuffs = new Dictionary<string, List<BuffValue>>();
-
-				for (int i = 0; i < ItemLoader.ItemCount; i++)
-				{
-					var mitem = ItemLoader.GetItem(i);
-
-
-					if (mitem != null)
-					{
-
-
-
-
 						if (mitem.Item.buffType >= 1)
 						{
 							var buff = BuffLoader.GetBuff(mitem.Item.buffType);
 							if (buff != null && !Main.lightPet[mitem.Item.buffType] && !Main.vanityPet[mitem.Item.buffType] && !mitem.Item.CountsAsClass(DamageClass.Summon))
 							{
-
-								if (GetInstance<Config>().AllowDebuff || !Main.debuff[mitem.Item.buffType])
+								if (!modBuffs.ContainsKey(mitem.Mod.Name))
 								{
-
-
-
-									if (!modBuffs.ContainsKey(mitem.Mod.Name))
-									{
-										modBuffs.Add(mitem.Mod.Name, new List<BuffValue>());
-									}
-
-									var bvalue = new BuffValue(false, mitem.Item.buffType, buff.DisplayName.GetDefault(), buff.Description.GetDefault(), mitem.Mod.Name, new CostValue[] { new ItemCostValue(mitem.Item.type, 30, mitem.DisplayName.GetDefault()) }, null, true);
-
-									modBuffs[mitem.Mod.Name].Add(bvalue);
+									modBuffs.Add(mitem.Mod.Name, new List<BuffValue>());
 								}
 
+								var bvalue = new BuffValue(
+									false, 
+									mitem.Item.buffType, 
+									buff.DisplayName.GetDefault(), 
+									buff.Description.GetDefault(), 
+									mitem.Mod.Name, 
+									new CostValue[] { 
+										new ItemCostValue(mitem.Item.type, -1, mitem.DisplayName.GetDefault()) 
+									}, 
+									null, 
+									true, 
+									Main.debuff[mitem.Item.buffType]
+								);
 
+								modBuffs[mitem.Mod.Name].Add(bvalue);
 							}
 						}
 					}
-
 				}
 
 				foreach (var v in modBuffs)

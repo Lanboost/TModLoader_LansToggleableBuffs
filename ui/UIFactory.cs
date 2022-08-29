@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 using ExampleMod.UI;
 using LansToggleableBuffs.ui.components;
 using LansToggleableBuffs.ui.elements;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LansToggleableBuffs.ui

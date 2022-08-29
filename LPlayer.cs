@@ -151,112 +151,38 @@ namespace LansToggleableBuffs
 			}
 			try
 			{
-				if (version == 0)
+				
+				var mods = tag.GetList<TagCompound>("mods");
+
+				foreach (var value in mods)
 				{
+					buffIndex = 0;
 
-					foreach (var v in LansToggleableBuffs.instance.oldSaveModBuffValues)
+					foreach (var v in LansToggleableBuffs.instance.modBuffValues)
 					{
-
-						var tempTag = tag.Get<TagCompound>(v.saveTag);
-						if (tempTag != null)
+						if (value.GetString("modName") == v.saveTag)
 						{
-
-							var b1 = tempTag.GetByteArray("boughtbuffsavail");
-							var b2 = tempTag.GetByteArray("buffsavail");
-
-
-							if (b1.Length == v.buffs.Length && b2.Length == v.buffs.Length)
+							foreach (var buffValue in value.GetList<TagCompound>("buffs"))
 							{
-
-
-								for (int i = 0; i < v.buffs.Length; i++)
+								int buffIndexOffset = buffIndex;
+								foreach (var buff in v.buffs)
 								{
-									bool found = false;
-									int buffSaveIndex = 0;
-									foreach (var newModBuffs in LansToggleableBuffs.instance.modBuffValues)
+									if (buff.name == buffValue.GetString("name"))
 									{
-
-										if (newModBuffs.saveTag == v.saveTag)
-										{
-											for (int j = 0; j < newModBuffs.buffs.Length; j++)
-											{
-												if (newModBuffs.buffs[j].name == v.buffs[i].name)
-												{
-													boughtbuffsavail[buffSaveIndex] = b1[i] == 1?true:false;
-													buffsavail[buffSaveIndex] = b2[i] == 1?true:false;;
-
-													found = true;
-												}
-												else
-												{
-													buffSaveIndex++;
-												}
-											}
-										}
-										else
-										{
-											buffSaveIndex += newModBuffs.buffs.Length;
-										}
+										boughtbuffsavail[buffIndexOffset] = buffValue.GetBool("bought");
+										buffsavail[buffIndexOffset] = buffValue.GetBool("using");
 
 									}
-
-									if (!found)
+									else
 									{
-										throw new Exception("Mod buff was not found");
+										buffIndexOffset++;
 									}
-
 								}
-
 							}
-							else
-							{
-								throw new Exception("Mod length was not the same");
-							}
-
 						}
 						else
 						{
-							throw new Exception("Mod without buff save");
-						}
-
-					}
-
-				}
-				else
-				{
-
-					var mods = tag.GetList<TagCompound>("mods");
-
-					foreach (var value in mods)
-					{
-						buffIndex = 0;
-
-						foreach (var v in LansToggleableBuffs.instance.modBuffValues)
-						{
-							if (value.GetString("modName") == v.saveTag)
-							{
-								foreach (var buffValue in value.GetList<TagCompound>("buffs"))
-								{
-									int buffIndexOffset = buffIndex;
-									foreach (var buff in v.buffs)
-									{
-										if (buff.name == buffValue.GetString("name"))
-										{
-											boughtbuffsavail[buffIndexOffset] = buffValue.GetBool("bought");
-											buffsavail[buffIndexOffset] = buffValue.GetBool("using");
-
-										}
-										else
-										{
-											buffIndexOffset++;
-										}
-									}
-								}
-							}
-							else
-							{
-								buffIndex += v.buffs.Length;
-							}
+							buffIndex += v.buffs.Length;
 						}
 					}
 				}
@@ -294,8 +220,10 @@ namespace LansToggleableBuffs
 		
 			for (int i = 0; i < LansToggleableBuffs.instance.getBuffLength(); i++)
 			{
-				var buffId = LansToggleableBuffs.instance.getBuff(i).id;
-				if (mp.boughtbuffsavail[i])
+				var buff = LansToggleableBuffs.instance.getBuff(i);
+
+                var buffId = buff.id;
+				if (mp.boughtbuffsavail[i] && (!buff.isDebuff || ModContent.GetInstance<Config>().AllowDebuff))
 				{
 					if (mp.buffsavail[i])
 					{
@@ -303,8 +231,6 @@ namespace LansToggleableBuffs
 						{
 							if (mp.reAddTimeout[i] <= 0)
 							{
-
-								//Main.NewText($"Readded buff {buffId}");
 								Player.AddBuff(buffId, int.MaxValue);
 								mp.reAddTimeout[i] = 60*10;
 							}

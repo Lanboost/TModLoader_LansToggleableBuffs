@@ -161,7 +161,7 @@ namespace LansToggleableBuffs.ui
                     Main.instance.LoadItem(((ItemCostValue)v).itemid);
                     var costIcon = UIFactory.CreateImage("Cost Image", TextureAssets.Item[((ItemCostValue)v).itemid]);
 
-                    var costcountLabel = UIFactory.CreateText("Cost Count",$"x{((ItemCostValue)v).count}");
+                    var costcountLabel = UIFactory.CreateText("Cost Count",$"x{((ItemCostValue)v).GetCountCost()}");
                     (costcountLabel.element as UIText).TextColor = new Color(232, 181, 16);
 
                     var costnamelabel = UIFactory.CreateText("Cost Label", $"{((ItemCostValue)v).itemname}");

@@ -88,7 +88,7 @@ namespace LansToggleableBuffs.ui
 			var mp = Main.player[Main.myPlayer].GetModPlayer<LPlayer>();
             contentPanel.RemoveChildren();
 
-			
+
 
             int buffIndex = 0;
 			foreach (var modBuffValues in LansToggleableBuffs.instance.modBuffValues)
@@ -101,7 +101,7 @@ namespace LansToggleableBuffs.ui
                 var modbuffgridpanelLayout = new LayoutGrid(10, new bool[] { true, true }, new bool[] { false, false }, LayoutGridType.Columns, 0,0,0,0,10);
                 modbuffgridpanel.SetLayout(modbuffgridpanelLayout);
 
-                contentPanel.Add(modbuffgridpanel);
+				var atleastOneBuffAdded = false;
 
                 //populate modbuffgridpanel
 
@@ -109,6 +109,13 @@ namespace LansToggleableBuffs.ui
 				{
 					var currentBuffIndex = buffIndex;
 					buffIndex += 1;
+
+					if(buffValue.isDebuff && !ModContent.GetInstance<Config>().AllowDebuff)
+					{
+						continue;
+					}
+					atleastOneBuffAdded = true;
+
 
                     var buffpanel = UIFactory.CreatePanel("A buff panel");
                     var buffpanelLayout = new LayoutFlow(new bool[] { true, true }, new bool[] { false, false }, LayoutFlowType.Vertical, 0, 0, 0, 0, 10);
@@ -202,8 +209,12 @@ namespace LansToggleableBuffs.ui
                     }
 
 				}
+				if(atleastOneBuffAdded)
+				{
+                    contentPanel.Add(modbuffgridpanel);
+                }
 
-			}
+            }
 
 			panel.Invalidate();
 
@@ -212,7 +223,7 @@ namespace LansToggleableBuffs.ui
 
 		public override void Update(GameTime gameTime)
         {
-			base.Update(gameTime);
+            base.Update(gameTime);
             if (!created)
             {
                 create();
