@@ -34,9 +34,9 @@ namespace LansToggleableBuffs.ui
             return new WrapperComponent(name, element);
         }
 
-        public static WrapperComponent CreateScrollPanel(string name, LComponent contentPanel)
+        public static WrapperComponent CreateScrollPanel(string name, LComponent contentPanel, UserInterface userInterface)
         {
-            var element = new UIScrollPanel(contentPanel);
+            var element = new UIScrollPanel(contentPanel, userInterface);
             return new WrapperComponent(name, element);
         }
 
@@ -98,7 +98,7 @@ namespace LansToggleableBuffs.ui
             UIElement.MouseEvent mouseClick, UIElement.MouseEvent mouseOver)
         {
             var element = new UIImageButtonLabel(texture, hoverText);
-            element.OnClick += mouseClick;
+            element.OnLeftClick += mouseClick;
             element.OnMouseOver += mouseOver;
             element.OnMouseOver += delegate (UIMouseEvent evt, UIElement listeningElement)
             {

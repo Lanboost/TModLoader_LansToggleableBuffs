@@ -40,7 +40,7 @@ namespace LansToggleableBuffs
 			ShowUI = KeybindLoader.RegisterKeybind(this, "Show UI", Keys.L.ToString());
 			ToggleBuffs = KeybindLoader.RegisterKeybind(this, "Toggle buff rendering", Keys.P.ToString());
 
-			IL.Terraria.Main.DrawInterface_Resources_Buffs += ModifyRenderBuffs;
+			Terraria.IL_Main.DrawInterface_Resources_Buffs += ModifyRenderBuffs;
 		}
 
 		public void ModifyRenderBuffs(ILContext iLContext)
@@ -93,11 +93,11 @@ namespace LansToggleableBuffs
 								var bvalue = new BuffValue(
 									false, 
 									mitem.Item.buffType, 
-									buff.DisplayName.GetDefault(), 
-									buff.Description.GetDefault(), 
+									buff.DisplayName.Value,
+									buff.Description.Value, 
 									mitem.Mod.Name, 
 									new CostValue[] { 
-										new ItemCostValue(mitem.Item.type, -1, mitem.DisplayName.GetDefault()) 
+										new ItemCostValue(mitem.Item.type, -1, mitem.DisplayName.Value) 
 									}, 
 									null, 
 									true, 

@@ -1,0 +1,30 @@
+Keybinds: {
+	"Show UI.DisplayName": Show  U I
+	"Toggle buff rendering.DisplayName": Toggle buff rendering
+}
+
+Configs: {
+	Config: {
+		DisplayName: Config
+
+		Debug: {
+			Label: God Mode (debug mode)
+			Tooltip: All buffs are free!!
+		}
+
+		AllowDebuff: {
+			Label: Allow debuffs
+			Tooltip: Why not give yourself some debuffs?!
+		}
+
+		ItemCount: {
+			Label: Items required (TODO)
+			Tooltip: Ammo box, summoning table etc
+		}
+
+		PotionCount: {
+			Label: Potions required (TODO)
+			Tooltip: Number of potions required to buy
+		}
+	}
+}

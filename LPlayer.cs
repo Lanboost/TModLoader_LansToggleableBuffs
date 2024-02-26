@@ -32,7 +32,7 @@ namespace LansToggleableBuffs
 			reAddTimeout = new int[size];
 		}
 
-		public override void clientClone(ModPlayer clientClone)
+		public override void CopyClientState(ModPlayer clientClone)/* tModPorter Suggestion: Replace Item.Clone usages with Item.CopyNetStateTo */
         {
             LPlayer clone = clientClone as LPlayer;
 

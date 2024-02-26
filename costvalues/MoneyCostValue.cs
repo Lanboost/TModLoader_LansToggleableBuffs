@@ -14,9 +14,9 @@ namespace LansToggleableBuffs
 
         public bool CheckBuy()
         {
-            Main.LocalPlayer.CanBuyItem(cost);
+            Main.LocalPlayer.CanAfford(cost);
 
-            return GetInstance<Config>().Debug || Main.LocalPlayer.CanBuyItem(cost);
+            return GetInstance<Config>().Debug || Main.LocalPlayer.CanAfford(cost);
         }
 
         public void Buy()

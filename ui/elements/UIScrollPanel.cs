@@ -12,18 +12,20 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.Graphics;
 using Terraria.ModLoader;
+using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace LansToggleableBuffs.ui.elements
 {
     class UIScrollPanel : UIElement
     {
-        protected UIScrollbar Scrollbar = new UIScrollbar();
+        protected FixedUIScrollbar Scrollbar;
 
         LComponent contentPanel;
-        public UIScrollPanel(LComponent contentPanel)
+        public UIScrollPanel(LComponent contentPanel, UserInterface userInterface)
         {
             this.contentPanel = contentPanel;
+            Scrollbar = new FixedUIScrollbar(userInterface);
         }
 
 
@@ -61,6 +63,7 @@ namespace LansToggleableBuffs.ui.elements
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            UpdateScrollbar();
             // moved from constructor to avoid texture loading on JIT thread
             if (_borderTexture == null)
             {
@@ -176,7 +179,7 @@ namespace LansToggleableBuffs.ui.elements
             }
         }
 
-        public void SetScrollbar(UIScrollbar scrollbar)
+        public void SetScrollbar(FixedUIScrollbar scrollbar)
         {
             Scrollbar = scrollbar;
             UpdateScrollbar();

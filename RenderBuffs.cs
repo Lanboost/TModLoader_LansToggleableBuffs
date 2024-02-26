@@ -85,6 +85,7 @@ namespace LansToggleableBuffs
 			int num4 = Main.player[Main.myPlayer].buffType[num];
 			if (num4 > 0)
 			{
+				var buffName = Lang.GetBuffName(num4);
 				Main.buffString = Lang.GetBuffDescription(num4);
 				if (num4 == 26 && Main.expertMode)
 					Main.buffString = Language.GetTextValue("BuffDescription.WellFed_Expert");
@@ -99,8 +100,8 @@ namespace LansToggleableBuffs
 				}
 
 				int rare = Main.meleeBuff[num4] ? -10 : 0;
-				BuffLoader.ModifyBuffTip(num4, ref Main.buffString, ref rare);
-				Main.instance.MouseTextHackZoom(Lang.GetBuffName(num4), rare);
+				BuffLoader.ModifyBuffText(num4, ref buffName, ref Main.buffString, ref rare);
+				Main.instance.MouseTextHackZoom(buffName, rare);
 			}
 		}
 	}

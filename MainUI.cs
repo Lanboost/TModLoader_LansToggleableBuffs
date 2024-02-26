@@ -27,9 +27,9 @@ namespace LansToggleableBuffs
             // the server can't see UI, can it? it's just a command prompt
             if (!Main.dedServ)
             {
-                somethingUI = new Panel();
-                somethingUI.Initialize();
                 somethingInterface = new UserInterface();
+                somethingUI = new Panel(somethingInterface);
+                somethingUI.Initialize();
                 somethingInterface.SetState(somethingUI);
             }
         }

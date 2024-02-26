@@ -24,7 +24,12 @@ namespace LansToggleableBuffs.ui
         public WrapperComponent panel;
         public WrapperComponent contentPanel;
 
+		UserInterface userInterface;
 
+        public Panel(UserInterface userInterface)
+        {
+            this.userInterface = userInterface;
+        }
 
         Asset<Texture2D> buttonPlayTexture1;
         Asset<Texture2D> buttonPlayTexture2;
@@ -63,7 +68,7 @@ namespace LansToggleableBuffs.ui
 
             
 
-            panel = UIFactory.CreateScrollPanel("Main Scroll", contentPanel);
+            panel = UIFactory.CreateScrollPanel("Main Scroll", contentPanel, userInterface);
 			panel.SetAnchor(components.AnchorPosition.Center);
 			panel.SetMargins(-250, -150, -250, -150);
 

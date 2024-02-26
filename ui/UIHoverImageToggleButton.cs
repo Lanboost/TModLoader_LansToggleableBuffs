@@ -47,7 +47,7 @@ namespace ExampleMod.UI
         {
             HoverTextChecked = hoverTextchecked;
             HoverTextUnchecked = hoverTextunchecked;
-            this.OnClick += new MouseEvent(PlayButtonClicked);
+            this.OnLeftClick += new MouseEvent(PlayButtonClicked);
             this.texture_checked = texture_checked;
             this.texture_unchecked = texture_unchecked;
 

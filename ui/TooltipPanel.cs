@@ -119,7 +119,8 @@ namespace LansToggleableBuffs.ui
                 itemRarity = -10;
             }
 
-            BuffLoader.ModifyBuffTip(buffid, ref buffdesc, ref itemRarity);
+            var buffNameText = Lang.GetBuffName(buffid);
+            BuffLoader.ModifyBuffText(buffid, ref buffNameText, ref buffdesc, ref itemRarity);
 
 
             var buffName = UIFactory.CreateText("Buff Name", name);

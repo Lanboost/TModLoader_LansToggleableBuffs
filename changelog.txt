@@ -1,3 +1,6 @@
+V. 2023.08.01.1:
+	- Ported to TML 1.4.4
+
 V. 2022.08.29:
 	- Fix issue with need full mod reload when changing if allowing debuff
 	- Fix issue with chaning cost of potions not being reflected in the ui or in the buy option.
